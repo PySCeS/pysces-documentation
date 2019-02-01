@@ -374,10 +374,8 @@ be used, instead use the full form *(1.0e-3)*, *(0.001)* or
 *(1.0)*. 
 
 Variable or free species are initialised differently depending 
-on whether compartments are present in the model. While in 
-essence the variables are set by the system parameters the 
-
-Although the variable species concentrations are determined by 
+on whether compartments are present in the model. Although the
+variable species concentrations are determined by 
 the parameters of the system, their initial values are used in 
 various places, calculating total moiety concentrations (if 
 present), time simulation initial values (e.g. time=zero) and 
@@ -477,8 +475,8 @@ the ODE's defined by the model stoichiometry and rate
 equations. Unlike the SBML rate rule, PySCeS allows one to 
 access a reaction symbol in the rate rules (this is 
 automatically expanded when the model is exported to SBML). The 
-general form of a rate rule is ``RateRule: <par> 
-{<function>}``. Where *<name>* is the model attribute (e.g. 
+general form of a rate rule is ``RateRule: <name> 
+{<formula>}``. Where *<name>* is the model attribute (e.g. 
 compartment or parameter) whose rate of change is described by 
 the *<formula>*. It may also be defined anywhere in the input 
 file:: 

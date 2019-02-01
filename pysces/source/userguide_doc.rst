@@ -4,8 +4,9 @@ Introduction
 ============
 
  PySCeS: the Python Simulator for Cellular Systems is an extendable toolkit for
- the analysis and investigation of cellular systems. It is available for
- download at http://pysces.sourceforge.net
+ the analysis and investigation of cellular systems. PySCeS is available for
+ download at http://pysces.sourceforge.net and on GitHub where the source
+ code is maintained: https://github.com/pysces
 
 Welcome! This users guide will get you started with the basics of modelling
 cellular systems with PySCeS. It is meant to be used together with the *input
@@ -28,6 +29,7 @@ following reference:
 We hope that you will enjoy using our software. If, however, you find any
 unexpected features (i.e. bugs) or have any suggestions on how we can improve
 PySCeS please let us know.
+
 
 **The PySCeS development team.**
 
@@ -70,13 +72,14 @@ To begin modelling we need to start up an interactive Python shell
 
 
  ***********************************************************************
- * Welcome to PySCeS (0.9.3) - Python Simulator for Cellular Systems   *
+ * Welcome to PySCeS (0.9.7) - Python Simulator for Cellular Systems   *
  *                http://pysces.sourceforge.net                        *
- * Copyright(C) B.G. Olivier, J.M. Rohwer, J.-H.S. Hofmeyr, 2004-2016  *
+ * Copyright(C) B.G. Olivier, J.M. Rohwer, J.-H.S. Hofmeyr, 2004-2019  *
  * Triple-J Group for Molecular Cell Physiology                        *
  * Stellenbosch University, ZA and VU University Amsterdam, NL         *
  * PySCeS is distributed under the PySCeS (BSD style) licence, see     *
  * LICENCE.txt (supplied with this release) for details                *
+ * Please cite PySCeS with: doi:10.1093/bioinformatics/bti046          *
  ***********************************************************************
  
 PySCeS is now ready to use. If you would like to test your 
