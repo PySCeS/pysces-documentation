@@ -1,0 +1,6 @@
+#!/bin/bash
+
+source /usr/bin/virtualenvwrapper.sh
+workon pydev
+make html
+
