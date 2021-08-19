@@ -1,25 +1,27 @@
 .. _Introducing-PySCeS:
 
+    PySCeS: the **\Py**\ thon **\ S**\ imulator for **\ Ce**\ llular 
+    **\ S**\ ystems is an extendable toolkit for the analysis and 
+    investigation of cellular systems. PySCeS is available for download at 
+    http://pysces.github.io and on GitHub where the source code is 
+    maintained: https://github.com/PySCeS/pysces
+
 Introduction
 ============
 
- PySCeS: the Python Simulator for Cellular Systems is an extendable toolkit for
- the analysis and investigation of cellular systems. PySCeS is available for
- download at http://pysces.sourceforge.net and on GitHub where the source
- code is maintained: https://github.com/pysces
-
-Welcome! This users guide will get you started with the basics of modelling
-cellular systems with PySCeS. It is meant to be used together with the *input
-file guide*. If you already have PySCeS installed continue straight on
-if not, :ref:`Installing-PySCeS` contains instructions on building and
+Welcome! This user guide will get you started with the basics of modelling
+cellular systems with PySCeS. It is meant to be read in conjunction with the 
+chapter on :ref:`PySCeS-Inputfile`, which specifies the syntax of the input 
+file read by the program. If you already have PySCeS installed continue straight 
+on; if not, :ref:`Installing-PySCeS` contains instructions on building and
 installing PySCeS.
 
- PySCeS is distributed under the PySCeS (BSD style) license and is made
- freely available as Open Source software. See LICENCE.txt for details.
+PySCeS is distributed under the PySCeS (BSD style) license and is made
+freely available as Open Source software. See ``LICENSE.txt`` for details.
 
-PySCeS continued development depends, to a large degree on 
-support and feedback from Systems Biology community, 
-if you use PySCeS in your work please cite it using the 
+The continued development of PySCeS depends, to a large 
+degree, on support and feedback from Systems Biology community.
+If you use PySCeS in your work please cite it using the 
 following reference: 
 
  Brett G. Olivier, Johann M. Rohwer and Jan-Hendrik S. Hofmeyr
@@ -28,8 +30,7 @@ following reference:
      
 We hope that you will enjoy using our software. If, however, you find any
 unexpected features (i.e. bugs) or have any suggestions on how we can improve
-PySCeS please let us know.
-
+PySCeS please let us know by opening an issue on Github.
 
 **The PySCeS development team.**
 
@@ -45,79 +46,80 @@ Loading PySCeS
 In this section we assume you have PySCeS installed and 
 configured (see `Installing and configuring`_ for details) and a 
 correctly formatted PySCeS input file that describes a cellular 
-system in terms of its reactions, species and parameters. For a 
-detailed description of the PySCeS Model Description Language 
-see the *PySCeS Input File Guide*. Note that on all platforms 
+system in terms of its reactions, species and parameters (refer to 
+:ref:`PySCeS-Inputfile`). Note that on all platforms 
 PySCeS model files have the extension ``.psc``. 
 
 To begin modelling we need to start up an interactive Python shell
-(we suggest iPython_) and load PySCeS with ``import pysces``::
+(we suggest IPython_) and load PySCeS with ``import pysces``::
 
- Python 2.7.11 |Anaconda 2.4.1 (64-bit)| (default, Dec  7 2015, 14:10:42) [MSC v.1500 64 bit (AMD64)]
- Type "copyright", "credits" or "license" for more information.
- 
- In [1]: import pysces
- Matplotlib backend set to: "TkAgg"
- Matplotlib interface loaded (pysces.plt.m)
- Continuation routines available
- NLEQ2 routines available
- You are using NumPy (1.10.1) with SciPy (0.16.0)
- RateChar is available
- Parallel scanner is available
- 
- PySCeS environment
- ******************
- pysces.model_dir = d:\\mypysces\\pscmodels
- pysces.output_dir = c:\\Pysces
+  Python 3.9.6 (default, Jun 30 2021, 10:22:16) 
+  Type 'copyright', 'credits' or 'license' for more information
+  IPython 7.26.0 -- An enhanced Interactive Python. Type '?' for help.
+
+  In [1]: import pysces
+  Matplotlib backend set to: "TkAgg"
+  Matplotlib interface loaded (pysces.plt.m)
+  Pitcon routines available
+  NLEQ2 routines available
+  SBML support available
+  You are using NumPy (1.20.3) with SciPy (1.7.1)
+  Assimulo CVode available
+  RateChar is available
+  Parallel scanner is available
+
+  PySCeS environment
+  ******************
+  pysces.model_dir = /home/jr/Pysces/psc
+  pysces.output_dir = /home/jr/Pysces
 
 
- ***********************************************************************
- * Welcome to PySCeS (0.9.7) - Python Simulator for Cellular Systems   *
- *                http://pysces.sourceforge.net                        *
- * Copyright(C) B.G. Olivier, J.M. Rohwer, J.-H.S. Hofmeyr, 2004-2019  *
- * Triple-J Group for Molecular Cell Physiology                        *
- * Stellenbosch University, ZA and VU University Amsterdam, NL         *
- * PySCeS is distributed under the PySCeS (BSD style) licence, see     *
- * LICENCE.txt (supplied with this release) for details                *
- * Please cite PySCeS with: doi:10.1093/bioinformatics/bti046          *
- ***********************************************************************
+  ***********************************************************************
+  * Welcome to PySCeS (0.9.9) - Python Simulator for Cellular Systems   *
+  *                http://pysces.sourceforge.net                        *
+  * Copyright(C) B.G. Olivier, J.M. Rohwer, J.-H.S. Hofmeyr, 2004-2020  *
+  * Triple-J Group for Molecular Cell Physiology                        *
+  * Stellenbosch University, ZA and VU University Amsterdam, NL         *
+  * PySCeS is distributed under the PySCeS (BSD style) licence, see     *
+  * LICENCE.txt (supplied with this release) for details                *
+  * Please cite PySCeS with: doi:10.1093/bioinformatics/bti046          *
+  ***********************************************************************
  
 PySCeS is now ready to use. If you would like to test your 
 installation try running the test suite::
 
- pysces.test()
+  pysces.test()
  
-this also copies the test models supplied with PySCeS into your 
+This also copies the test models supplied with PySCeS into your 
 model directory. 
 
 
 Creating a PySCeS model object
 ------------------------------
 
- This guide uses the test models supplied with PySCeS as 
- examples, if you would like to use them and have not already 
- done so run the PySCeS tests (described in the previous 
- section). 
+  This guide uses the test models supplied with PySCeS as 
+  examples; if you would like to use them and have not already 
+  done so, run the PySCeS tests (described in the previous 
+  section). 
 
 Before modelling, a PySCeS model object needs to be instantiated.
 As a convention we use ``mod`` as the instantiated model
 instance. The following code creates such an instance using the
 test input file, ``pysces_test_linear1.psc``::
 
- >>> mod = pysces.model('pysces_test_linear1')
- 
- Assuming extension is .psc
- Using model directory: C:\mypysces\pscmodels
- C:\mypysces\pscmodels\pysces_test_linear1.psc loading .....
-
- Parsing file: C:\mypysces\pscmodels\pysces_test_linear1.psc
- Calculating L matrix . . . . . . .  done.
- Calculating K matrix . . . . . . .  done.
+  >>> mod = pysces.model('pysces_test_linear1')
+  Assuming extension is .psc
+  Using model directory: /home/jr/Pysces/psc
+  /home/jr/Pysces/psc/pysces_test_linear1.psc loading ..... 
+  Parsing file: /home/jr/Pysces/psc/pysces_test_linear1.psc
+  
+  Calculating L matrix . . . . . . .  done.
+  Calculating K matrix . . . . . . .  done.
 
 When instantiating a new model object, PySCeS input files are 
 assumed to have a ``.psc`` extension. If the specified input 
 file does not exist in the input file directory (e.g. 
-misspelled filename) a list of existing input files is shown 
+misspelled filename), a list of existing input files is shown 
 and the user is given an opportunity to enter the correct 
 filename. 
 
@@ -125,47 +127,53 @@ Advanced
 ~~~~~~~~ 
 
 The model constructor can also be used to specify a model 
-directory other than the default model path:: 
+directory other than the default model path: :: 
 
- mod = pysces.model('pysces_test_linear1', dir='c:\\Pysces\\psc')
+  >>> mod = pysces.model('pysces_test_linear1', dir='/my/own/directory/for/psc')
 
-alternatively input files can also be loaded from a string::
+Alternatively, input files can also be loaded from a string: ::
 
- >>> F = file('c:\\Pysces\\psc\\pysces_test_linear1.psc', 'r')
- >>> pscS = F.read()
- >>> F.close()
- >>> mod = pysces.model('test_lin1s', loader='string', fString=pscS)
- 
- Assuming extension is .psc
- Using model directory: C:\mypysces\pscmodels
- Using file: test_lin1s.psc
- C:\mypysces\pscmodels\orca\test_lin1s.psc loading .....
+  >>> F = open('/home/jr/Pysces/psc/pysces_test_linear1.psc', 'r')
+  >>> pscS = F.read()
+  >>> F.close()
+  >>> mod = pysces.model('test_lin1s', loader='string', fString=pscS)
+  Assuming extension is .psc
+  Using model directory: /home/jr/Pysces/psc
+  Using file: test_lin1s.psc
+  /home/jr/Pysces/psc/orca/test_lin1s.psc loading ..... 
+  Parsing file: /home/jr/Pysces/psc/orca/test_lin1s.psc
+  
+  Calculating L matrix . . . . . . .  done.
+  Calculating K matrix . . . . . . .  done.
 
-note that now the input file is saved and loaded as 
-``model_dir\orca\test_lin1s.psc``. 
+Note that now the input file is saved and loaded as 
+``model_dir/orca/test_lin1s.psc``. 
 
-Creating a PySCeS model object
-------------------------------
+Loading the model object
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once a new model object has been created it needs to be loaded. 
 During the load process the input file is parsed, the model 
 description is translated into Python data structures and a 
-stoichiometric structural analysis is performed::
- 
- **New** in PySCeS 0.7.1+ model loading is now automatically performed
- when the model object is instantiated. This behaviour is controlled
- by the *autoload* argument (default = True). To keep backwards compatibility
- with older modelling scripts the first time ``doLoad()`` is called a warning
- is generated. Subsequent calls to ``doLoad()`` will reload the model as required.
+stoichiometric structural analysis is performed.
+
+.. note::
+  In PySCeS 0.7.1+ model loading is now automatically performed when the model 
+  object is instantiated. This behaviour is controlled by the ``autoload``
+  argument (default = ``True``). To keep backwards compatibility with older 
+  modelling scripts, whenever ``doLoad()`` is called a warning 
+  is generated. 
+
+  To force re-loading of a model from the input file, use ``mod.reLoad()``.
  
 Once loaded, all the model elements contained in the input file 
 are made available as model (``mod``) attributes so that in the 
 input file where you might find initialisations such as ``s1 = 
-1.0`` and ``k1 = 10.0`` these are now available as ``mod.s1`` 
+1.0`` and ``k1 = 10.0``, these are now available as ``mod.s1`` 
 and ``mod.k1``. For variable species and compartments an 
-additional attribute is created which contains the elements 
+additional attribute is created, which contains the element's 
 *initial* (as opposed to current) value. These are constructed as
-<name>*_init*:: 
+``<name>_init`` :: 
 
  >>> mod.s1
  1.0
@@ -176,9 +184,9 @@ additional attribute is created which contains the elements
 
 Any errors generated during the loading process (almost always) 
 occur as a result of syntax errors in the input file. These 
-error messages may not be intuitive for example, \'list out of 
-range\' exception usually indicates a missing multiplication 
-operator \"3(\" instead of \"3*(\" or unbalanced parentheses. 
+error messages may not be intuitive; for example, ``'list out of 
+range'`` exception usually indicates a missing multiplication 
+operator(``3(`` instead of ``3*(``) or unbalanced parentheses. 
 
 Basic model attributes
 ----------------------
@@ -193,19 +201,19 @@ loaded:
 * ``mod.ModelOutput``, the PySCeS work/output directory.
 
 * Parameters are available as attributes directly as specified 
-  in the input file e.g. ``k1`` is ``mod.k1``.
+  in the input file, e.g. ``k1`` is ``mod.k1``.
 
 * External (fixed) species are made available in the same way.
 
 * Internal (variable) species are treated in a similar way except that an
-  additional attribute (parameter) is created to hold the species initial value
+  additional attribute (parameter) is created to hold the species' initial value
   (as specified in the input file), e.g., from ``s1``, ``mod.s1`` and
   ``mod.s1_init`` are instantiated as model object attributes.
 
 * Compartments are also are assigned an initial value.
 
 * Rate equations are translated into objects that return their current value
-  when called ``mod.R1()``.
+  when called, e.g. ``mod.R1()``.
 
 All basic model attributes that are described here can be 
 changed interactively. However, if the model rate equations need 
@@ -213,11 +221,13 @@ to be changed, this should be done in the input file after
 which the model should be re-instantiated and reloaded. 
 
 Groups of model properties (either tuples, lists or dictionaries)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * ``mod.species`` the model's variable species names (ordered 
   relative to the stoichiometric matrix rows). 
 
-* ``mod.reactions`` reaction names and ordered to the stoichiometric matrices columns. 
+* ``mod.reactions`` reaction names ordered to the stoichiometric matrices 
+  columns. 
 
 * ``mod.parameters`` all parameters (including fixed species)
 
@@ -228,13 +238,13 @@ Groups of model properties (either tuples, lists or dictionaries)
 Advanced
 ~~~~~~~~
 
-These attributes are used by PySCeS to store additional 
-information about the basic model components, generally they 
+The following attributes are used by PySCeS to store additional 
+information about the basic model components; generally they 
 are supplied by the parser and should almost never be changed 
 directly. 
 
 * ``mod.__events__`` a list of event object references 
-  which can be interrogated for event information. For example if you 
+  which can be interrogated for event information. For example, if you 
   want a list of event names try ``[ev.name for ev in mod.__events__]``
 
 * ``mod.__rules__`` a dictionary containing information about all rules defined for this model
@@ -253,15 +263,15 @@ Structural Analysis
 
 As part of the model loading procedure, ``doLoad()`` automatically performs
 a stoichiometric (structural) analysis of the model. The structural
-properties of the model are captured in stoichiometric matrix (**N**),
+properties of the model are captured in the stoichiometric matrix (**N**),
 kernel matrix (**K**) and link matrix (**L**). These matrices can
 either be displayed with a ``mod.showX()`` method or used in further
-calculations as numeric arrays. The formal definition of these matrices,
+calculations as NumPy arrays. The formal definition of these matrices,
 as they are used in PySCeS, is described in [#]_.
 
 The structural properties of a model are available in two 
 forms, as new-style objects which have all the array properties 
-neatly encapsulated or as legacy attributes. Although both 
+neatly encapsulated, or as legacy attributes. Although both 
 exist it is highly recommended to use the new objects. 
 
 Structural Analysis - new objects
@@ -274,11 +284,11 @@ next (legacy) section.
 
 * ``mod.Nrmatrix`` view with ``mod.showNr()``
 
-* ``mod.Lmatrix`` view with ``mod.showK()``
+* ``mod.Lmatrix`` view with ``mod.showL()``
 
 * ``mod.L0matrix``
 
-* ``mod.Kmatrix`` view with ``mod.showL()``
+* ``mod.Kmatrix`` view with ``mod.showK()``
 
 * ``mod.K0matrix``
 
@@ -288,8 +298,8 @@ next (legacy) section.
   between dependent and independent fluxes at steady state. 
 
 All new structural objects have an *array* attribute which 
-holds the actual NumPy array data as well as *ridx* and *cidx* 
-which hold the row and column indexes (relative to the 
+holds the actual NumPy array data, as well as *ridx* and *cidx* 
+which hold the row and column indices (relative to the 
 stoichiometric matrix) as well as the following methods: 
 
 * ``.getLabels()`` return the matrix labels as tuple([rows], [columns])
@@ -314,7 +324,8 @@ Structural Analysis - legacy
 * ``mod.kmatrix``, **K**: displayed with ``mod.showK()``
 
 * ``mod.lmatrix``, **L**: displayed with ``mod.showL()`` (an identity
-  matrix means **L** does not exist i.e. no linear dependence).
+  matrix means that no conservation relationships exist, i.e. there is no 
+linear dependence between species).
 
 * If there are linear dependencies in the differential equations then the
   reduced stoichiometric matrix of linearly independent, differential
@@ -330,80 +341,78 @@ Structural Analysis - legacy
   (**K0**, **L0**) are available as ``mod.kzeromatrix`` and
   ``mod.lzeromatrix``.
 
-* ``mod.showConserved()`` prints any moiety conserved relationships (if
-  present).
-
 * ``mod.showFluxRelationships()`` shows the relationships between dependent
   and independent fluxes at steady state.
 
-If the ``mod.showX()`` methods are used the row and column titles of the
+If the ``mod.showX()`` methods are used, the row and column titles of the
 various matrices are displayed with the matrix. Additionally, all of the
 ``mod.showX()`` methods accept an open file object as an argument. If this
-file argument is present the method's results are output to a file and not
+file argument is present, the method's results are output to a file and not
 printed to the screen. Alternatively, the order of each matrix dimension,
 relative to the stoichiometric matrix, is available as either a row or
-column array (e.g., ``mod.krow``, mod.lrow``, ``mod.kzerocol``).
+column array (e.g. ``mod.krow``, ``mod.lrow``, ``mod.kzerocol``).
 
 Time simulation
 ---------------
 
-PySCeS has interfaces to two ODE solvers either LSODA from 
-ODEPACK (part of SciPy) or SUNDIALS CVODE (using PySundials). 
-If PySundials is installed it will automatically select CVODE 
+PySCeS has interfaces to two ODE solvers, either LSODA from 
+ODEPACK (part of SciPy) or SUNDIALS CVODE (using Assimulo). 
+If Assimulo is installed, PySCeS will automatically select CVODE 
 if compartments, events or rate rules are detected during model 
 load as LSODA is not able capable of event handling or changing 
 compartment sizes. If, however, you would like to select the 
 solver manually this is also possible:: 
 
- mod.mode_integrator = 'LSODA'
- mod.mode_integrator = 'CVODE'
+  >>> mod.mode_integrator = 'LSODA'
+  >>> mod.mode_integrator = 'CVODE'
 
 There are three ways of running a simulation:
 
 1. Defining the *start*, *end* time and number of *points* and using the
-   ``mod.Simulate()`` method directly::
+   ``mod.Simulate()`` method directly:  ::
      
-     mod.sim_start = 0.0
-     mod.sim_end = 20
-     mod.sim_points = 50
-     mod.Simulate()
+    >>> mod.sim_start = 0.0
+    >>> mod.sim_end = 20
+    >>> mod.sim_points = 50
+    >>> mod.Simulate()
 
 2. Using the ``mod.doSim()`` method where only the *end* time and *points*
-   need to be specified. For example running a 20 point simulation from time
-   0 to 10::
+   need to be specified. For example, running a 20-point simulation from time
+   0 to 10:  ::
 
-     >>> mod.doSim(end=10.0, points=20.0)
+    >>> mod.doSim(end=10.0, points=20)
 
-3. Or using ``mod.doSimPlot()`` which runs the simulation and displays the
-   results. In addition to doSim's arguments the following arguments may
-   be used::
+3. Or using ``mod.doSimPlot()`` which runs the simulation and 
+   graphically displays the
+   results. In addition to ``doSim()``'s arguments the following arguments may
+   be used:   ::
    
-    mod.doSimPlot(end=10.0, points=21, plot='species', fmt='lines', filename=None)
+  >>> mod.doSimPlot(end=10.0, points=21, plot='species', fmt='lines', filename=None)
 
-   where: 
-   
-   - *plot* can be one of species, rates or all.
-   - *fmt* plot format, UPI backend dependent (default='') or the *CommonStyle* 'lines' or 'points'.
-   - *filename* if not None (default) then the plot is exported as *filename*.png
+  where: 
+
+  - *plot* can be one of ``'species'``, ``'rates'`` or ``'all'``.
+  - *fmt* is the plot format, UPI backend dependent (default= ``''`` ) or the *CommonStyle* 
+    ``'lines'`` or ``'points'``.
+  - *filename* if not ``None`` (default), then the plot is exported as *filename*.png
 
 Another way of quickly visualising the results of a simulation 
-is to use the ``mod.SimPlot`` method::
+is to use the ``mod.SimPlot()`` method.  ::
 
- mod.SimPlot(plot='species', filename=None, title=None, log=None, format='lines')
+  >>> mod.SimPlot(plot='species', filename=None, title=None, log=None, format='lines')
 
 where:
 
-- *plot*: output to plot (default='species')
-
- - 'all' rates and species
- - 'species' species
- - 'rates' reaction rates
- - `['S1', 'R1', ]` a list of model attributes (species, rates)
-
-- *filename* (optional) if not None file is exported to filename (default=None)
+- *plot*: output to plot (default= ``'species'`` )
+ - ``'all'`` rates and species
+ - ``'species'`` species
+ - ``'rates'`` reaction rates
+ - ``['S1', 'R1', ]`` a list of model attributes (species, rates)
+- *filename* (optional) if not ``None`` file is exported to filename (default=None)
 - *title* the plot title (default=None)
-- *log* use log axis for 'x', 'y', 'xy' (default=None)
-- *fmt* plot format, UPI backend dependent (default='') or the *CommonStyle* 'lines' or 'points'.
+- *log* use log axis for ``'x'``, ``'y'``, ``'xy'`` (default=None)
+- *fmt* plot format, UPI backend dependent (default= ``''`` ) or the *CommonStyle* 
+  ``'lines'`` or ``'points'``.
 
 Called without arguments, ``mod.SimPlot()`` plots all the species
 concentrations against time. 
@@ -1276,7 +1285,7 @@ References
 .. _Numpy:       http://numpy.sourceforge.net
 .. _Scipy:       http://www.scipy.org
 .. _Matplotlib:  http://matplotlib.sourceforge.net
-.. _Ipython:     http://ipython.scipy.org
+.. _IPython:     https://ipython.org
 .. _wxPython:    http://www.wxpython.org
 .. _Mingw:       http://www.mingw.org
 .. _PLY:         http://systems.cs.uchicago.edu/ply
