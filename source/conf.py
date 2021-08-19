@@ -18,8 +18,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.join(os.path.expanduser('~'), 'src', 'git', 'pysces', 'pysces'))
-print(sys.path)
+sys.path.insert(0, '../..')
 import sphinx_rtd_theme
 
 # -- General configuration ------------------------------------------------
