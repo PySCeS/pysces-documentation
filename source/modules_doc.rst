@@ -25,6 +25,12 @@ PySCeS Module documentation
     :members:
     :undoc-members:
 
+.. _Module_PyscesParScan:
+
+.. automodule:: pysces.PyscesParScan
+    :members:
+    :undoc-members:
+
 .. _Module_PyscesInterfaces:
 
 .. automodule:: pysces.PyscesInterfaces

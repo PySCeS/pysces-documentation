@@ -325,7 +325,7 @@ Structural Analysis - legacy
 
 * ``mod.lmatrix``, **L**: displayed with ``mod.showL()`` (an identity
   matrix means that no conservation relationships exist, i.e. there is no 
-linear dependence between species).
+  linear dependence between species).
 
 * If there are linear dependencies in the differential equations then the
   reduced stoichiometric matrix of linearly independent, differential
@@ -385,9 +385,9 @@ There are three ways of running a simulation:
 3. Or using ``mod.doSimPlot()`` which runs the simulation and 
    graphically displays the
    results. In addition to ``doSim()``'s arguments the following arguments may
-   be used:   ::
+   be used:
    
-  >>> mod.doSimPlot(end=10.0, points=21, plot='species', fmt='lines', filename=None)
+    >>> mod.doSimPlot(end=10.0, points=21, plot='species', fmt='lines', filename=None)
 
   where: 
 
@@ -404,10 +404,10 @@ is to use the ``mod.SimPlot()`` method.  ::
 where:
 
 - *plot*: output to plot (default= ``'species'`` )
- - ``'all'`` rates and species
- - ``'species'`` species
- - ``'rates'`` reaction rates
- - ``['S1', 'R1', ]`` a list of model attributes (species, rates)
+  + ``'all'`` rates and species
+  + ``'species'`` species
+  + ``'rates'`` reaction rates
+  + ``['S1', 'R1', ]`` a list of model attributes (species, rates)
 - *filename* (optional) if not ``None`` file is exported to filename (default=None)
 - *title* the plot title (default=None)
 - *log* use log axis for ``'x'``, ``'y'``, ``'xy'`` (default=None)
@@ -420,7 +420,7 @@ concentrations against time.
 Simulation results
 ~~~~~~~~~~~~~~~~~~
 
-In PySCeS 0.7.x the simulation results have been consolidated 
+Starting with PySCeS versions 0.7.x the simulation results have been consolidated 
 into a new ``mod.data_sim`` object. By default species 
 concentrations/amounts, reaction rates and rate rules are 
 automatically added to the *data_sim* object. If extra 
@@ -428,10 +428,10 @@ information (parameters, compartments, assignment rules) is
 required this can easily be added using ``mod.CVODE_extra_output``, a
 list containing any model attribute which is not added by default.
 
-The ``mod.data_sim`` object which has many methods for extracting simulation
+The ``mod.data_sim`` object has many methods for extracting simulation
 data including:
 
-* ``data_sim.getTime()`` return a vector of time points
+* ``data_sim.getTime()`` returns a vector of time points
 
 * ``data_sim.getSpecies()`` returns array([[time], [species]])
 
@@ -442,27 +442,27 @@ data including:
 * ``data_sim.getXData`` returns array([[time], [CVODE_extra_output]])
 
 * ``data_sim.getSimData(*args)`` return an array consisting of *time* plus any
-  available data series:: 
+  available data series: :: 
   
-   mod.data_sim.getSimdata('s1', 'R1', 'Rule1', 'xData2')
+    >>> mod.data_sim.getSimdata('s1', 'R1', 'Rule1', 'xData2')
 
-* ``data_sim.getAllSimData(*args)`` return an array of all simulation data
+* ``data_sim.getAllSimData()`` return an array of all simulation data
 
 * ``data_sim.getDataAtTime(time)`` return the results of the simulation at
   *time*.
 
 * ``data_sim.getDataInTimeInterval(time, bound)`` return the simulation
-  data in the interval [time-bound, time+bound], if *bound* is not
+  data in the interval *[time-bound, time+bound]*, if *bound* is not
   specified it is assumed to be the step size.
 
-All the *data_sim.get\** methods by default only return a NumPy array containing
+All the ``data_sim.get*`` methods by default only return a NumPy array containing
 the requested data, however if the argument *lbls* is set to True then both
-the array as well as a list of column labels is returned::
+the array as well as a list of column labels is returned:  ::
 
- Sdata, Slabels = mod.data_sim.getSpecies(lbls=True)
+  >>> data, Slabels = mod.data_sim.getSpecies(lbls=True)
 
 This is very useful when using the PySCeS plotting interface 
-(described later in this guide) to plot simulation results. 
+(see `Plotting`_) to plot simulation results. 
 
 Advanced
 ~~~~~~~~
@@ -470,55 +470,50 @@ Advanced
 PySCeS sets integrator options that attempt to configure the integration
 algorithms to suit a particular model. However, almost every integrator
 option can be overridden by the user. 
-Simulator settings are stored in PySCeS ``mod.__settings__`` 
-dictionary. For LSODA some useful keys are
-(mod.__settings__[*key*]):: 
+Simulator settings are stored in the PySCeS ``mod.__settings__`` 
+dictionary. For LSODA some useful keys (default values indicated) are
+(``mod.__settings__[*key*]``):  :: 
 
- 'lsoda_atol': 1.0e-012
- 'lsoda_rtol': 1.0e-007
- 'lsoda_mxordn': 12
- 'lsoda_mxords': 5
- 'lsoda_mxstep': 0
+  'lsoda_atol': 1.0e-12
+  'lsoda_rtol': 1.0e-7
+  'lsoda_mxordn': 12
+  'lsoda_mxords': 5
+  'lsoda_mxstep': 0
 
-atol and rtol are the absolute and relative tolerances, while mxstep=0
+where *atol* and *rtol* are the absolute and relative tolerances, while *mxstep=0*
 means that LSODA chooses the number of steps (up to 500). If this is
 still not enough, PySCeS automatically increases the number of steps
 necessary to find a solution.   
 
-Additionally, CVODE allows per step step-size optimisation and automatic 
-tolerance scaling:: 
+The following options can be set for CVODE, with their defaults indicated:  :: 
 
- 'cvode_abstol': 1.0e-15
- 'cvode_abstol_factor': 1.0e-8
- 'cvode_auto_tol_adjust': True
- 'cvode_mxstep': 1000
- 'cvode_reltol': 1.0e-9
- 'cvode_stats': False
+  'cvode_abstol': 1.0e-15
+  'cvode_mxstep': 1000
+  'cvode_reltol': 1.0e-9
+  'cvode_stats': False
+  'cvode_return_event_timepoints': True
 
-*cvode_abstol* is considered to be the minimum absolute 
-tolerance, PySCeS first uses the initial species values 
-multiplied by *cvode_abstol_factor* (so that [s]*[factor] >= [abstol]) 
-to calculate its absolute tolerance. Once the simulation is 
-underway PySCeS periodically readjusts the absolute tolerance 
-on a per species basis based on the current species value.
-
+where *atol*, *rtol* and *mxstep* are as above. 
 If CVODE cannot find a solution in the given number of steps it 
 automatically increases *cvode_mxstep* and tries again, 
 however, it also keeps track of the number of times that this 
 adjustment is required and if a specific threshold is passed it 
 will begin to increase *cvode_reltol* by 1.0e3 (to a maximal 
-value of 1.0e-3). Finally, if *cvode_stats* is enabled CVODE will 
+value of 1.0e-3). If *cvode_stats* is enabled CVODE will 
 display a report of its internal parameters after the 
-simulation is complete. 
+simulation is complete. Finally, CVODE will by default also output the time 
+points when events are triggered, even if these were not originally specified 
+in ``mod.sim_time``. To disable this behaviour and strictly report only the 
+times in ``mod.sim_time``, set *cvode_return_event_timepoints* to ``False``.
 
 
 Steady-state analysis
 ---------------------
 
 PySCeS solves for a steady state using either the non-linear solvers
-HYBRD_,  NLEQ2_ or forward integration. By default PySCeS has *solver
-fallback* enabled which means that if a solver fails or returns an invalid
-result (i.e., contains negative concentrations) it switches to the next
+HYBRD_,  NLEQ2_ or forward integration. By default PySCeS has *solver fallback* 
+enabled which means that if a solver fails or returns an invalid
+result (e.g., contains negative concentrations) it switches to the next
 available solver. The solver chain is as follows: 
 
 1. HYBRD (can handle 'rough' initial conditions, converges quickly).
@@ -531,10 +526,10 @@ available solver. The solver chain is as follows:
 
 Solver fallback can be disabled by setting ``mod.mode_solver_fallback =
 0``. Each of the three solvers is highly configurable and although the
-default settings should work for most models configurable options
-can be set in by way of the *mod.__settings__* dictionary.
+default settings should work for most models, configurable options
+can be set by way of the ``mod.__settings__`` dictionary.
 
-To calculate a steady state use the ``mod.doState()`` method::
+To calculate a steady state use the ``mod.doState()`` method: ::
 
   >>> mod.doState() 
   (hybrd) The solution converged.
@@ -550,71 +545,75 @@ individual attributes and can be easily displayed using the
   represents its steady-state value, is created.
 
 * Similarly, each species (e.g. ``mod.s2``) has a steady-state attribute
-  ``mod.s2_ss``
+  ``mod.s2_ss``.
 
-* ``mod.state_species`` in ``mod.species`` order.
+* ``mod.state_species`` is an array of steady-state species values in 
+  ``mod.species`` order.
 
-* ``mod.state_flux`` in ``mod.reactions`` order.
+* ``mod.state_flux`` is an array of steady-state fluxes in ``mod.reactions`` 
+  order.
 
 There are various ways of initialising the steady-state solvers although,
-in general, the default values can be used.
+in general, the default values should be sufficient.
 
 * ``mod.mode_state_init`` initialises the solver using either the initial
-  values (0), a value close to zero (1). The default behaviour 
-  is to use the initial values. 
+  values specified in the input file (0), or a value close to zero (1). The 
+  default behaviour is to use the initial values. 
 
-New: mod.data_sstate
-~~~~~~~~~~~~~~~~~~~~
+The steady-state data object
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-New to PySCeS 0.7 is the ``mod.data_sstate`` object that by 
+Since PySCeS version 0.7 the ``mod.data_sstate`` object by 
 default stores steady-state data (species, fluxes, rate rules) 
-in a manner similar to mod.data_sim. One notable exception is 
+in a manner similar to ``mod.data_sim``. One notable exception is 
 that the current steady-state values are also made available as 
 attributes to this object (e.g. species S1's steady-state value 
 is stored as ``mod.data_sstate.S1``). Using the 
-``mod.STATE_extra_output`` list it is possible to store user 
-defined data in the *data_sstate* object. Steady-state data can be
-easily retrieved using the by now familiar *.get\** methods. 
+``mod.STATE_extra_output`` list it is possible to store user-defined data in 
+the ``data_sstate`` object. Steady-state data can be
+easily retrieved using the by now familiar ``.get*`` methods. 
 
 - ``data_sstate.getSpecies()`` returns a species array
 - ``data_sstate.getFluxes()`` returns a flux array       
 - ``data_sstate.getRules()`` returns a rate rule array
 - ``data_sstate.getXData()`` returns an array defined in *STATE_extra_output*       
-- ``data_sstate.getStateData(*args)`` return user defined array of data ('S1','R2')
-- ``data_sstate.getAllStateData()`` return all state data as an array 
+- ``data_sstate.getStateData(*args)`` return user defined array of data 
+  (``'S1','R2'``)
+- ``data_sstate.getAllStateData()`` return all steady-state data as an array 
 
-All these methods also accept the lbls=True argument in which case they return both
-array data and a label list::
+All these methods also accept the ``lbls=True`` argument in which case they 
+return both array data and a label list:   ::
 
- ssdat, sslbl = mod.data_sstate.getSpecies(lbls=True)
+  >>> ssdat, sslbl = mod.data_sstate.getSpecies(lbls=True)
 
-Stability
-~~~~~~~~~
+Stability analysis
+~~~~~~~~~~~~~~~~~~
 
 PySCeS can analyse the stability of systems that can attain a steady state.
-It does this by calculating the Eigen values of the Jacobian matrix for the 
-reduced system of independent ODE's::
+It does this by calculating the eigenvalues of the Jacobian matrix for the 
+reduced system of independent ODEs. 
 
 - ``mod.doEigen()`` calculates a steady-state and performs the stability analysis
 - ``mod.showEigen`` prints out a stability report
 - ``mod.doEigenShow()`` combines both of the above
 
-The Eigen values are also available as attributes 
-``mod.lambda1`` etc. By default the Eigen values are stored as 
+The eigenvalues are also available as attributes 
+``mod.lambda1`` etc. By default the eigenvalues are stored as 
 ``mod.eigen_values`` but if 
-``mod.__settings__['mode_eigen_output'] = 1`` is set both the 
-Eigen values as well as the left and right Eigen vectors are 
-stored as ``mod.eigen_vecleft`` and ``mod.eigen_vecright`` 
+``mod.__settings__['mode_eigen_output'] = 1`` is set, in addition to the
+eigenvalues the left and right eigenvectors are 
+stored as ``mod.eigen_vecleft`` and ``mod.eigen_vecright``,
 respectively. Please note that there is currently no guarantee 
-that the order of the Eigen value array corresponds to the 
+that the order of the eigenvalue array corresponds to the 
 species order. 
 
 
 Metabolic Control Analysis
 --------------------------
 
-For practical purposes the following methods are collected into a set of
-meta-routines that all first solve for a steady state and then the required
+For ease of use the following methods are collected into a set of
+meta-routines that all first solve for a steady state and then
+perform the required
 Metabolic Control Analysis (MCA) [#]_, [#]_ evaluation methods.
 
 
@@ -624,8 +623,8 @@ Elasticities
 The elasticities towards both the variable species and parameters can be
 calculated using ``mod.doElas()`` which generates as output:
 
-* Scaled elasticities generated as ``mod.ecRate_Species``, e.g.
-  ``mod.ecR4_s2``
+* Scaled elasticities referenced as ``mod.ecRate_Species``, e.g.
+  ``mod.ecR4_s2``.
 
 * ``mod.showEvar()`` displays the non-zero elasticities calculated with
   respect to the variable species.
@@ -633,8 +632,8 @@ calculated using ``mod.doElas()`` which generates as output:
 * ``mod.showEpar()`` displays the non-zero parameter elasticities.
 
 As a prototype we also store the elasticities in an object, 
-``mod.ec.*`` this may become the default way of accessing 
-elasticity data in future releases but has not been stabilised 
+``mod.ec.*``; this may become the default way of accessing 
+elasticity data in future releases but has not been fully stabilised 
 yet. 
 
 Control coefficients
@@ -646,32 +645,31 @@ method, ``mod.doMca()``.
 * ``mod.showCC()`` displays the complete set of flux and concentration
   control coefficients.
 
-* Individual control coefficients are generated as either
-  ``mod.ccSpecies_Rate`` for a concentration control coefficient, e.g.
-  ``mod.ccs1_R4``.
+* Individual concentration-control coefficients are referenced as 
+  ``mod.ccSpecies_Rate``, e.g. ``mod.ccs1_R4``.
 
-* Similarly, ``mod.ccJFlux_Rate`` is a flux control coefficient e.g.
+* Similarly, ``mod.ccJFlux_Rate`` is a flux-control coefficient, e.g.
   ``mod.ccJR1_R4``.
 
 As it is generally common practice to use scaled elasticities 
-and control coefficients PySCeS calculated these by default. 
-However, it is possible to generate unscaled elasticities and 
+and control coefficients, PySCeS calculated these by default. 
+However, it is possible to calculate unscaled elasticities and 
 control coefficients by setting the attribute 
-``mod.__settings__['mode_mca_scaled'] = 0`` in which case the 
+``mod.__settings__['mode_mca_scaled'] = 0``, in which case the 
 model attributes are attached as ``mod.uec`` and ``mod.ucc`` 
 respectively. 
 
-As a prototype we also store the elasticities in an object, 
-``mod.cc.*`` this may become the default way of accessing 
-control coefficient data in future releases but has not been 
+As a prototype we also store the control coefficients in an object, 
+``mod.cc.*``; this may become the default way of accessing 
+control coefficient data in future releases but has not been fully
 stabilised yet. 
 
 Response coefficients
 ~~~~~~~~~~~~~~~~~~~~~
 
-A new PySCeS feature is the ability to calculate the parameter response
+PySCeS can calculate the parameter response
 coefficients for a model with the ``mod.doMcaRC()`` method. Unlike the
-elasticities and control coefficients the response coefficients are made
+elasticities and control coefficients, the response coefficients are made
 available as a single attribute ``mod.rc``. This attribute is a data
 object, containing the response coefficients as attributes and has the
 following methods:
@@ -682,7 +680,7 @@ following methods:
 * ``rc.get('var', 'par')`` return a response coefficient
 
 * ``rc.list()`` returns all response coefficients as a dictionary of
-  {key:value} pairs
+  *{key: value}* pairs
 
 * ``rc.select('attr', search='a')`` select all response coefficients that
   refer to ``'attr'`` e.g. ``select('R1')`` or ``select('k2')``
@@ -693,14 +691,25 @@ following methods:
 
 * ``rc.col``: column labels
 
-Responce coefficients with respect to moiety-conserved sums
+Response coefficients with respect to moiety-conserved sums
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``mod.doMcaRC()`` method only calculates response coefficients with respect to explicit model parameters. However, in models with moiety-conservation the total concentration of all the species that form part of a particular moiety-conserved cycle is also a parameter of the model. PySCeS infers such moiety-conserved sums from the initial species concentrations specified by the user. In some cases it might be interesting to consider the effects that a change in the total concentration of a moiety will have on the steady-state. This analysis may be done with the method ``mod.doMcaRCT()``.
+The ``mod.doMcaRC()`` method only calculates response coefficients with respect 
+to explicit model parameters. However, in models with moiety-conservation the 
+total concentration of all the species that form part of a particular 
+moiety-conserved cycle is also a parameter of the model. PySCeS infers such 
+moiety-conserved sums from the initial species concentrations specified by the 
+user. In some cases it might be interesting to consider the effects that a 
+change in the total concentration of a moiety will have on the steady-state. 
+This analysis may be done with the method ``mod.doMcaRCT()``.
 
-Since moiety-conserved sums are not explicitly named in PySCeS model files, ``'T_'`` is prepended to all the species names listed in ``mod.Consmatrix.row``. For instance, if the dependent species in a moiety-conserved cycle is ``'A'``, then ``'T_A'`` designates the moiety-conserved sum.
+Since moiety-conserved sums are not explicitly named in PySCeS model files, 
+``'T_'`` is prepended to all the species names listed in ``mod.Consmatrix.row``. 
+For instance, if the dependent species in a moiety-conserved cycle is ``'A'``, 
+then ``'T_A'`` designates the moiety-conserved sum.
 
-The object ``mod.rc`` is augmented with the results of ``mod.doMcaRCT()``. Response coefficients may thus be accessed with ``mod.rc.get('var', 'T_par')``.
+The object ``mod.rc`` is augmented with the results of ``mod.doMcaRCT()``. 
+Response coefficients may thus be accessed with ``mod.rc.get('var', 'T_par')``.
 
 
 .. _Analysis:
@@ -721,29 +730,29 @@ each step. Two methods are provided which simplify this task,
 define the scan parameters:
 
 * ``mod.scan_in`` is a string defining the parameter to be scanned e.g.
-  ``'x0'``
+  ``'k0'``
 
 * ``mod.scan_out`` is a list of strings representing the attribute names
-  you would like to track in the output eg.
+  to be tracked in the output, e.g.
   ``['J_R1','J_R2','s1_ss','s2_ss']``
 
 * You also need to define the range of points that you would like to scan
-  over. For a linear range SciPy has a useful function
-  ``scipy.linspace(start, end, points)`` (SciPy can be accessed by typing
-  ``import scipy`` in your Python shell). If you need to generate a log range
-  use ``scipy.logspace(start, end, points)``.
+  over. For a linear range NumPy has a useful function
+  ``numpy.linspace(start, end, points)`` (NumPy can be accessed by importing it 
+  in your Python shell via ``import numpy``). If you need to generate a log 
+  range use ``numpy.logspace(start, end, points)``.
 
-  Both ``scipy.linspace`` and ``scipy.logspace`` use the number of points
+  Both ``numpy.linspace`` and ``numpy.logspace`` use the number of points
   (including the start and end points) in the interval as an input.
-  Additionally, the start and end values of ``scipy.logspace`` must be
+  Additionally, the start and end values of ``numpy.logspace`` must be
   entered as indices, e.g. to start the range at 0.1 and end it at 100 you
-  would write ``scipy.logspace(-1, 2, steps)``. Setting up a PySCeS scan
-  session might look something like::
+  would write ``numpy.logspace(-1, 2, steps)``. Setting up a PySCeS scan
+  session might look something like:  ::
 
-    >>> import scipy 
+    >>> import numpy 
     >>> mod.scan_in = 'x0'
     >>> mod.scan_out = ['J_R1','J_R6','s2_ss','s7_ss'] 
-    >>> scan_range = scipy.linspace(0,100,11)
+    >>> scan_range = numpy.linspace(0,100,11)
 
 Before starting the parameter scan, it is important to check that all the
 model attributes involved in the scan do actually exist. For example,
@@ -752,7 +761,7 @@ the elasticities (``mod.ecR_S``) and control coefficients (``mod.ccJ_R``)
 are only created when the ``mod.doMca()`` method is called. If all the
 attributes exist you can perform a parameter scan using the
 ``mod.Scan1(scan_range)`` method which takes your predefined scan range as
-an argument::
+an argument:  ::
 
   >>> mod.Scan1(scan_range)
 
@@ -766,60 +775,66 @@ When the scan has been successfully completed, the results are stored in
 the array (``mod.scan_res``) that has ``mod.scan_in`` as its first column
 followed by columns that represent the data defined in ``mod.scan_out`` (if
 invalid steady states are generated during the scan they are replaced by
-NaN). Scan1 also reports the scan parameter values which generated the
-invalid states.} . If one or more of your input or output parameters is not
-a valid model attribute, it will be ignored. Once the parameter scan data
+*NaN*). Scan1 also reports the scan parameter values which generated the
+invalid states. If one or more of the specified input or output parameters are 
+not valid model attributes, they will be ignored. Once the parameter scan data
 has been generated, the next step is to visualise it using the
-``mod.Scan1Plot()`` method::
+``mod.Scan1Plot()`` method:  ::
 
- >>> mod.Scan1Plot(plot=[], title=None, log=None, format='lines', filename=None)
+  >>> mod.Scan1Plot(plot=[], title=None, log=None, format='lines', filename=None)
 
-- *plot* if empty mod.scan_out is used, otherwise any subset of mod.scan_out (default=[])
-- *filename* the filename of the PNG file (default=None, no export)
-- *title* the plot title (default=None)
-- *log* if None a linear axis is assumed otherwise one of ['x','xy','xyz'] (default=None)
-- *format* the backend dependent line format (default='lines')  or the *CommonStyle* 'lines' or 'points'.
+- *plot* if empty, ``mod.scan_out`` is used, otherwise any subset of mod.scan_out 
+  (default= ``[]``)
+- *filename* the filename of the PNG file to save (default= ``None``, no export)
+- *title* the plot title (default= ``None``)
+- *log* if ``None`` a linear axis is assumed, otherwise one of 
+  ``['x', 'y', 'xy']`` (default= ``None``)
+- *format* the backend dependent line format (default= ``'lines'``)  
+  or the *CommonStyle* ``'lines'`` or ``'points'``.
 
-Called without any arguments Scan1Plot plots all of *mod.sim_out* against *mod.sim_in*.
+Called without any arguments, ``Scan1Plot()`` plots all of ``mod.scan_out`` against
+``mod.scan_in``.
 
-Two dimension parameter scans
------------------------------
+Two-dimensional parameter scans
+-------------------------------
 
-Two dimension parameter scans can also easily be generated using the ``mod.Scan2D``
-method::
+Two-dimensional parameter scans can also easily be generated using the ``mod.Scan2D``
+method:  ::
 
- >>> mod.Scan2D(p1, p2, output, log=False)
+  >>> mod.Scan2D(p1, p2, output, log=False)
 
-- *p1* is a list of [model parameter 1, start value, end value, points]
-- *p2* is a list of [model parameter 2, start value, end value, points]
-- *output* the steady-state variable e.g. 'J_R1' or 'A_ss'
-- *log* if True scan using log ranges for both axes
+- *p1* is a list of ``[model parameter 1, start value, end value, points]``
+- *p2* is a list of ``[model parameter 2, start value, end value, points]``
+- *output* the steady-state variable e.g. ``'J_R1'`` or ``'A_ss'``
+- *log* if ``True`` scan using log ranges for both axes
 
-To plot the results of two dimensional scan use the ``mod.Scan2DPlot`` method. Note
-that as Matplotlib cannot produce 3D plots the GnuPlot interface must be active 
-(see the section on plotting later on in this guide)::
+To plot the results of two dimensional scan use the ``mod.Scan2DPlot`` method. 
+Note: the GnuPlot interface must be active for this to work
+(see the section on `Plotting`_ later on in this guide). ::
 
  >>> mod.Scan2DPlot(title=None, log=None, format='lines', filename=None)
 
-- *filename* the filename of the PNG file (default=None, no export)
-- *title* the plot title (default=None)
-- *log* if None a linear axis is assumed otherwise one of ['x','xy','xyz'] (default=None)
-- *format* the backend dependent line format (default='lines')  or the *CommonStyle* 'lines' or 'points'.
+- *filename* the filename of the PNG file (default= ``None``, no export)
+- *title* the plot title (default= ``None``)
+- *log* if ``None`` a linear axis is assumed, otherwise one of 
+  ``['x', 'xy', 'xyz']`` (default= ``None``)
+- *format* the backend dependent line format (default= ``'lines'``)  
+  or the *CommonStyle* ``'lines'`` or ``'points'``.
 
-Multi-dimension parameter scans
--------------------------------
+Multi-dimensional parameter scans
+---------------------------------
 
-This new PySCeS feature allows multi-dimensional parameter scanning. Any
-combination of parameters is possible and can be added as *master*
-parameters that change independently or *slave* parameters whose change is
+This PySCeS feature allows multi-dimensional parameter scanning. Any
+combination of parameters is possible and can be added as *leader*
+parameters that change independently or *follower* parameters whose change is
 coordinated with the previously defined parameter. Unlike ``mod.Scan1()``
-this function is accessed via the ``pysces.Scanner`` class that is
-instantiated with a loaded PySCeS model object::
+this function is accessed via the ``pysces.Scanner`` class that is separately
+instantiated with a loaded PySCeS model object:  ::
 
   >>> sc1 = pysces.Scanner(mod) 
   >>> sc1.addScanParameter('x3', 1, 10, 11) 
   >>> sc1.addScanParameter('k2', 0.1, 1000, 5, log=True) 
-  >>> sc1.addScanParameter('k4', 0.1, 1000, 5, log=True, slave=True)
+  >>> sc1.addScanParameter('k4', 0.1, 1000, 5, log=True, follower=True)
   >>> sc1.addUserOutput('J_R1', 's1_ss') 
   >>> sc1.Run()
 
@@ -833,31 +848,31 @@ instantiated with a loaded PySCeS model object::
   array([1.0e+01, 1.0e+03, 1.0e+03, -3.32564878e+00, 3.84227702e-03])
 
 In this scan we define two independent (``x3, k2``) and one dependent
-(``k3``) scan parameters and track the changes in the steady state
+(``k3``) scan parameters and track the changes in the steady-state
 variables ``J_R1`` and ``s1_ss``. Note that ``k2`` and ``k4`` use a
 logarithmic scale. Once run the input parameters cannot be altered,
 however, the output can be changed and the scan rerun.
 
-* ``sc1.addScanParameter(name, start, end, points, log, slave)`` where
+* ``sc1.addScanParameter(name, start, end, points, log, follower)`` where
   ``name`` is the input parameter (as a string), ``start`` and ``end`` define
-  the range with the required number of ``points``. While ``log`` and
-  ``slave`` are boolean arguments indicating the point distribution and
+  the range with the required number of ``points``, While ``log`` and
+  ``follower`` are boolean arguments indicating the point distribution and
   whether the axis is independent or not.
 
 * ``sc1.addUserOutput(*args)`` an arbitrary number of model attributes to
   be output can be added (this method automatically tries to determine the
-  level of analysis necessary) e.g. ``addUserOutput('J_R1', 'ecR1_k2')``
+  level of analysis necessary), e.g. ``addUserOutput('J_R1', 'ecR1_k2')``
 
 * ``sc1.Run()`` run the scan, if subsequent runs are required after
-  changing output parameters use ``sc1.RunAgain()``. Note that it is not
+  changing output attributes, use ``sc1.RunAgain()``. Note that it is not
   possible to change the input parameters once a scan has been run, if this
   is required a new Scanner object should be created.
 
 * ``sc1.getResultMatrix(stst=False)`` return the scan results as an array containing
-  both input and output if *stst = True* append the 
+  both input and output. If ``stst = True`` append the 
   steady-state fluxes and concentrations to the user output so 
-  that output has dimensions [scan_parameters]+[state_species+state_flux]+[Useroutput] 
-  otherwise return the default [scan_parameters]+[Useroutput].
+  that output has dimensions ``[scan_parameters]+[state_species+state_flux]+[Useroutput]``, 
+  otherwise return the default ``[scan_parameters]+[Useroutput]``.
 
 * ``sc1.UserOutputList`` the list of output names
 
@@ -865,12 +880,49 @@ however, the output can be changed and the scan rerun.
 
 * ``sc1.ScanSpace`` the generated list of input parameters.
 
+Parallel parameter scans
+------------------------
+
+When performing large multi-dimensional parameter scans, PySCeS has the option 
+to perform the computation in parallel, either on a single machine with a 
+multi-core CPU, or on a multi-node cluster. This requires a working 
+`ipyparallel`_ installation. The functionality is accessed via the 
+``pysces.ParScanner`` class, which has the same methods as the 
+``pysces.Scanner`` class (see above) with a few multiprocessing-specific 
+additions.
+
+The parallel scanner class is instantiated with a loaded PySCeS model object: ::
+
+    >>> sc1 = pysces.ParScanner(mod, engine='multiproc')
+    
+The additional ``engine`` argument specifies the parallel computation engine to 
+use:
+
+* ``'multiproc'`` - use Python's internal *multiprocessing* module (default)
+
+* ``'ipcluster'`` - use *ipcluster* (refer to `ipyparallel`_ documentation)
+
+There are two ways to run the scan:
+
+* ``sc1.Run()`` - runs the scan with a load-balancing task client; tasks are
+  queued and sent to nodes as these become available.
+  
+* ``sc1.RunScatter()`` - compute tasks are evenly distributed amongst compute 
+  nodes ("scattered") and the results are returned ("gathered") once all 
+  the computations are complete. No load balancing is performed. May be 
+  slightly faster than ``sc1.Run()`` if the individual tasks are very similar.
+  *Not available with* ``multiproc`` *!*
+  
+Further input and output processing is as for ``pysces.Scanner``. A few example 
+scripts illustrating the parallel scanning procedure are provided in the 
+*pysces/examples* folder of the installation.
+
 .. _Plotting:
 
 Plotting
 ========
 
-The PySCeS plotting interface has been completely rewritten to 
+The PySCeS plotting interface has written to 
 facilitate the use of multiple plotting back-ends via a Unified 
 Plotting Interface (UPI). Using the UPI we ensure that a 
 specified subset of plotting methods is back-end independent 
@@ -882,102 +934,109 @@ The common UPI functionality is accessible as ``pysces.plt.*``
 while back-end specific functionality is available as 
 ``pysces.plt.m`` (Matplotlib) and ``pysces.plt.g`` (GnuPlot).
 
-While the Matplotlib is activated by default GnuPlot needs to 
-be enabled (see Configuring PySCeS section) and then activated 
+While the Matplotlib is activated by default, GnuPlot needs to 
+be enabled (see `Configuring`_ PySCeS section) and then activated 
 using ``pysces.plt.p_activateInterface('gnuplot')``. All 
 installed interfaces can be activated or deactivated as 
-required:: 
+required:  :: 
 
- >>> pysces.plt.p_activateInterface(interface)
- >>> pysces.plt.p_deactivateInterface(interface)
+  >>> pysces.plt.p_activateInterface(interface)
+  >>> pysces.plt.p_deactivateInterface(interface)
   
-where *interface* is either *'matplotlib'* or *'gnuplot'*. The 
+where ``interface`` is either ``'matplotlib'`` or ``'gnuplot'``. The 
 PySCeS UPI defines currently has the following methods:
 
 ``plot(data, x, y, title='', format='')`` plot a single line data[y] vs data[x]
 
-  - *data* the data array
+  - *data* the 2D-data array
   - *x* x column index
   - *y* y column index
-  - *title* is the line key
+  - *title* is the line legend text (key)
   - *format* is the backend format string (default='')
 
-``plotLines(data, x, y=[], titles=[], formats=[''])`` plot multiple lines i.e. data[y1, y2, ] vs data[x]
+``plotLines(data, x, y=[], titles=[], formats=[''])`` plot multiple lines, i.e. 
+data[y1, y2, ] vs data[x]
  
   - *data* the data array
   - *x* x column index
   - *y* is a list of line indexes, if empty all of y not including x is plotted
-  - *titles* a list of line keys, if empty Line1, Line2, etc is used
-  - *formats* a list (per line) of format strings, if formats only contains a single item, this format is used for all lines.
+  - *titles* a list of line keys, if empty Line1, Line2, etc. is used
+  - *formats* a list (per line) of format strings, if formats only contains a 
+    single item, this format is used for all lines.
 
-``splot(data, x, y, z, title='', format='')`` plot a surface i.e. data[z] vs data[y] vs data[x]
+``splot(data, x, y, z, title='', format='')`` plot a surface, i.e. data[z] vs 
+data[y] vs data[x]
 
   - *data* the data array
   - *x* x column index
   - *y* y column index
   - *z* z column index
-  - *title* the surface key
+  - *title* the surface key (legend text)
   - *format* a format string (default='')
 
-``splotSurfaces(data, x, y, z=[], titles=[], formats=[''])`` plot multiple surfaces i.e. data[z1, z2, ] vs data[y] vs data[x]
+``splotSurfaces(data, x, y, z=[], titles=[], formats=[''])`` plot multiple 
+surfaces, i.e. data[z1, z2, ] vs data[y] vs data[x] 
  
   - *data* the data array
   - *x* x column index
   - *y* y column index
   - *z* a list of z column indexes, if empty all data not including x, y are plotted
-  - *titles* a list of surface keys, if empty Surf1, Surf2 etc. is used
-  - *formats* is a list (per line) of format strings (default='') 
- 
-If formats only contains a single item, this format is used for all surfaces.
+  - *titles* a list of surface keys, if empty Surf1, Surf2, etc. is used
+  - *formats* is a list (per line) of format strings (default=''). If formats 
+    only contains a single item, this format is used for all surfaces.
 
-``replot()`` replot the current figure using all active interfaces (useful with GnuPlot type interfaces)
+``replot()`` replot the current figure using all active interfaces (useful with 
+GnuPlot type interfaces) 
 
-``save(name, directory=None, dfmt='\%.8e')`` save the plot data and (if possible) the back-end specific format file
+``save(name, directory=None, dfmt='\%.8e')`` save the plot data and (if 
+possible) the back-end specific format file 
 
   - *filename* the filename
   - *directory* optional (default = current working directory)
-  - *dfmt* the data format string (default='\%.8e')
+  - *dfmt* the data format string (default= ``'\%.8e'``)
 
-``export(name, directory=None, type='png')`` export the current plot as a <format> file (currently only PNG is guaranteed to be available on all back-ends).
+``export(name, directory=None, type='png')`` export the current plot as a 
+*<type>* file (currently only PNG is guaranteed to be available on all 
+back-ends). 
  
   - *filename* the filename
   - *directory* optional (default = current working directory)
-  - *type* the file format (default='png').
+  - *type* the file format (default= ``'png'``).
 
-``setGraphTitle(title='PySCeS Plot')`` set the graph title, unset if *title=None*
+``setGraphTitle(title='PySCeS Plot')`` set the graph title, unset if 
+``title=None``
  
   - *title* (string, default='PySCeS Plot') the graph title
 
-``setAxisLabel(axis, label='')`` sets one or more axis label
+``setAxisLabel(axis, label='')`` sets one or more axis labels
  
   - *axis* x, y, z, xy, xz, yz, zyx
-  - *label* label string (default=None)
- 
-Called with only the axis argument clears that axis' label.
+  - *label* label string (default= ``None``). When alled with only the axis 
+    argument, clears the label of that axis.
 
 ``setKey(value=False)`` enable or disable the current plot key, no arguments removes key.
  
-  - *value* boolean (default = False)
+  - *value* boolean (default= ``False``)
 
 ``setLogScale(axis)`` set *axis* to log scale
  
-  - *axis* is one of x, y, z, xy, xz, yz, zyx
+  - *axis* is one of ``x, y, z, xy, xz, yz, zyx``
 
-``setNoLogScale(axis)`` set axis to a linear scale
+``setNoLogScale(axis)`` set *axis* to a linear scale
  
-  - *axis* is one of x, y, z, xy, xz, yz, zyx
+  - *axis* is one of ``x, y, z, xy, xz, yz, zyx``
 
-``setRange(axis, min=None, max=None)`` set one or more axis range
+``setRange(axis, min=None, max=None)`` set one or more axis ranges
  
-  - *axis* is one of x, y, z, xy, xz, yz, zyx
+  - *axis* is one of ``x, y, z, xy, xz, yz, zyx``
   - *min* is the range(s) lower bound (default=None, back-end auto-scales)
-  - *max* range(s) upper bound (default=None, back-end auto-scales)
+  - *max* is the range(s) upper bound (default=None, back-end auto-scales)
 
 ``setGrid(value)`` enable or disable the graph grid
  
-  - *value* (boolean) True (on) or False (off)
+  - *value* (boolean) ``True`` (on) or ``False`` (off)
 
-``plt.closeAll()`` Close all active Matplolib figures
+``plt.closeAll()`` Close all active Matplolib figures.
 
 
 .. _Output:
@@ -995,13 +1054,13 @@ open, writable (ASCII mode) file object as an argument, they write the
 requested information to the open file. This allows the generation of
 customised reports containing only information relevant to the model.
 
-* ``mod.showSpecies()`` prints the current value of the model species
+* ``mod.showSpecies()`` prints the current values of the model species
   (mod.M).
 
-* ``mod.showSpeciesI()`` prints the initial, parsed in, value of the model
-  species (mod.Mi).
+* ``mod.showSpeciesI()`` prints the initial values of the model
+  species (mod.Mi), as parsed from the input file.
 
-* ``mod.showPar()`` prints the current value of the model parameters.
+* ``mod.showPar()`` prints the current values of the model parameters.
 
 * ``mod.showState()`` prints the current steady-state fluxes and species.
 
@@ -1009,33 +1068,36 @@ customised reports containing only information relevant to the model.
   present).
 
 * ``mod.showFluxRelationships()`` shows the relationships between dependent
-  and independent fluxes at steady state
+  and independent fluxes at steady state.
 
 * ``mod.showRateEq()`` prints the reaction stoichiometry and rate equations.
 
-* ``mod.showODE()`` prints the differential equations.
+* ``mod.showODE()`` prints the ordinary differential equations.
 
-Please note that the ``mod.showModel()`` method is not 
-recommended for saving models as a PySCeS input file instead 
-use the Core2 based ``pysces.interface.writeMod2PSC`` method 
-instead:: 
+.. note::
 
- >>> pysces.interface.writeMod2PSC(mod, filename, directory, iValues=True, getstrbuf=False)
+  The ``mod.showModel()`` method is not 
+  recommended for saving models as a PySCeS input file, 
+  use the Core2 based ``pysces.interface.writeMod2PSC`` method 
+  instead: ::
+
+  >>> pysces.interface.writeMod2PSC(mod, filename, directory, iValues=True, getstrbuf=False)
  
-- *filename*: writes <filename>.psc or <model_name>.psc if None
-- *directory*: (optional) an output directory
-- *iValues*: if True (default) then the models initial values are used (or the current values if False).
-- *getstrbuf*: if True a StringIO buffer is returned instead of writing to disk
+  - *filename*: writes ``<filename>.psc`` or ``<model_name>.psc`` if ``None``
+  - *directory*: (optional) an output directory
+  - *iValues*: if ``True`` (default) then the model initial values are used 
+    (or the current values if ``False``)
+  - *getstrbuf*: if ``True`` a StringIO buffer is returned instead of writing to disk
 
-Assuming you have loaded a model and run ``mod.doState()`` the following
-code opens a Python file object (``rFile``), writes the steady-state
-results to the file associated with the file object (``results.txt``) and
-then closes it again::
+For example, assuming you have loaded a model and run ``mod.doState()`` the 
+following code opens a Python file object (``rFile``), writes the steady-state 
+results to the file associated with the file object (``results.txt``) and then 
+closes it again: ::
 
- >>> rFile = file('results.txt','w') 
- >>> mod.showState()      # print the results to screen
- >>> mod.showState(rFile) # write the results to the file results.txt
- >>> rFile.close()
+  >>> rFile = open('results.txt','w') 
+  >>> mod.showState()      # print the results to screen
+  >>> mod.showState(rFile) # write the results to the file results.txt
+  >>> rFile.close()
 
 
 Writing formatted arrays
@@ -1044,7 +1106,7 @@ Writing formatted arrays
 The ``showX()`` methods described in the previous sections allow the user a
 convenient way to write the predefined matrices either to screen or file.
 However, for maximum flexibility, PySCeS includes a suite of array writers
-that enable one to easily write, in a variety of formats any array to a
+that enable one to easily write, in a variety of formats, any array to a
 file. Unlike the ``showX()`` methods, the ``Write_array`` methods are
 specifically designed to write to data to a file.
 
@@ -1056,7 +1118,7 @@ equal in length to the matrix dimension they describe and in the correct
 order.
 
 There are currently three custom array writing methods that work either
-with a 1D (vector) or 2D arrays (matrices). To allow an easy comparison of
+with a 1D (vector) or 2D (matrix) array. To allow an easy comparison of
 the output of these methods, all the following sections use the same
 example array as input.
 
@@ -1066,7 +1128,7 @@ example array as input.
 The basic array writer is the ``Write_array()`` method. Using the default
 settings this method writes a 'tab delimited' array to a file. It is
 trivial to change this to a 'comma delimited' format by using the
-``separator = ' '`` argument. Numbers in the array are formatted using the
+``separator = ','`` argument. Numbers in the array are formatted using the
 global number format.
 
 If column headings are supplied using the ``Col = []`` argument they are
@@ -1079,7 +1141,7 @@ array data.
 
 Finally, if the ``close_file`` argument is enabled the supplied file object
 is automatically closed after writing the array. The full call to the
-method is::
+method is: ::
 
   >>> mod.Write_array(input, File=None, Row=None, Col=None, separator=' ')
 
@@ -1100,11 +1162,11 @@ consisting of the model name and the time the array was written. This
 behaviour can be disabled by setting: ``mod.write_array_header = 0``
 
 ``Write_array_latex()``
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``Write_array_latex()`` method functions similarly to the generic
 ``Write_array()`` method except that it generates a formatted array that
-can be included directly in a \LaTeX\ document. Additionally, there is no
+can be included directly in a LaTeX document. Additionally, there is no
 separator argument, column headings are not truncated and row labels appear
 to the left of the matrix.
 
@@ -1281,16 +1343,17 @@ References
 
 
 .. _PySCeS:      http://pysces.sourceforge.net
-.. _Python:      http://www.python.org
-.. _Numpy:       http://numpy.sourceforge.net
-.. _Scipy:       http://www.scipy.org
-.. _Matplotlib:  http://matplotlib.sourceforge.net
+.. _Python:      https://www.python.org
+.. _Numpy:       https://numpy.org
+.. _Scipy:       https://scipy.org
+.. _Matplotlib:  https://matplotlib.org
 .. _IPython:     https://ipython.org
-.. _wxPython:    http://www.wxpython.org
-.. _Mingw:       http://www.mingw.org
-.. _PLY:         http://systems.cs.uchicago.edu/ply
-.. _MetaTool:    http://www.biologie.hu-berlin.de/biophysics/Theory/tpfeiffer/metatool.html
-.. _ZIB:         http://www.zib.de
+.. _wxPython:    https://www.wxpython.org
+.. _Mingw:       https://mingw-w64.org
+.. _PLY:         https://www.dabeaz.com/ply/
+.. _MetaTool:    https://doi.org/10.1093/bioinformatics/15.3.251
+.. _ZIB:         https://www.zib.de
 .. _HYBRD:       http://www.netlib.org
-.. _NLEQ2:       http://www.zib.de/SciSoft/ANT/nleq2.en.html
+.. _NLEQ2:       http://elib.zib.de/pub/elib/codelib/NewtonLib/
 .. _Cygwin:      http://www.cygwin.com
+.. _ipyparallel: https://ipyparallel.readthedocs.io/
