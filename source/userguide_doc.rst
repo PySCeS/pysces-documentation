@@ -935,7 +935,7 @@ while back-end specific functionality is available as
 ``pysces.plt.m`` (Matplotlib) and ``pysces.plt.g`` (GnuPlot).
 
 While the Matplotlib is activated by default, GnuPlot needs to 
-be enabled (see `Configuring`_ PySCeS section) and then activated 
+be enabled (see `Configuration`_ section) and then activated 
 using ``pysces.plt.p_activateInterface('gnuplot')``. All 
 installed interfaces can be activated or deactivated as 
 required:  :: 
@@ -1209,116 +1209,204 @@ and in a typeset document appears as:
 Installing and configuring
 ==========================
 
-Before installing or building PySCeS the following software is 
-required:
+PySCeS is developed primarily in Python and has been designed to
+operate on multiple operating systems, i.e. Linux, Microsoft Windows and macOS.
+PySCeS makes use of NumPy and SciPy for a number of functions
+and needs a working SciPy stack (https://www.scipy.org) 
+to install and run.
 
- - Python 2.5 (or 2.4 plus the Elementree/cElementree packages)
- - Numpy 1.2+
- - SciPy 0.7.0 (0.6.x will work with NumPy > 1.0.5)
- - GCC 4.2+ on Linux or MinGW GCC 3.4.5 on Windows is required for building PySCeS from source only
- - Matplotlib 0.98.3 with the TkAgg backend (this is the default, but optional, plotting package but can be replaced with GnuPlot)
- 
-optional, but highly recommended, packages:
+General requirements
+--------------------
 
- - libSBML 3.x install with the Python bindings for SBML support 
- - GnuPlot alternative plotting back-end
- - iPython highly recommended for interactive modelling sessions
- - SciTE editor for editing and running PySCeS based modelling programs
+- Python 3.6+
+- Numpy 1.14+
+- SciPy 1.0+
+- Matplotlib (with TkAgg backend)
+- `GnuPlot <http://www.gnuplot.info>`_ (optional, alternative plotting back-end)
+- `IPython`_ or the `Jupyter`_ notebook (optional, highly recommended for 
+  interactive modelling sessions)
+- libSBML (optional). Python bindings for SBML support van be installed via ::
+
+    $ pip install python-libsbml
 
 This software stack provides a powerful scientific programming 
 platform which is used by PySCeS to provide a flexible Systems 
 Biology Modelling environment. 
 
-PySCeS 0.7.0 itself has been modularised into a main package 
-and a (growing) number of support modules which extends its 
-core functionality. The most important of these is the advanced 
-simulation support added by installing PySundials 
-(http://pysundials.sf.net). Linux users should build and 
-install the SUNDIALS library and PySundials (build instructions 
-on the PySundials web site). Windows users can simply download 
-and install the *pysces_pysundials* module. 
+PySCeS itself has been modularised into a main package 
+and a (growing) number of support modules which extend its 
+core functionality. It is highly recommended that
+the following packages/modules are also installed:
 
- - *pysces_pysundials* a binary port of SUNDIALS+PySundials for Windows
- - *pysces_metatool* adds elementary mode support to PySCeS using MetaTool
- - *pysces_mariner* SOAP based web services gateway, including a PySCeS server and remote client
- - *pysces_kraken* (coming soon) PySCeS distributed processing module (currently distributed with PySCeS)
- 
-PySCeS and its extension modules use either the Python 
-distutils or the Numpy distutils extensions. Assuming you have 
-working versions of NumPy and SciPy on a Linux type operating 
-systems building PySCeS is as easy as:: 
+- *Assimulo* to enable CVODE support. This can be installed on Anaconda via the 
+  *conda-forge* channel, or compiled from source 
+  (https://jmodelica.org/assimulo).
 
- python setup.py install
- 
-On Windows (with MinGW) depending on your system configuration 
-this becomes:: 
-
- python setup.py config --compiler=mingw32 build --compiler=mingw32 install
-
-In this release we have started prototyping Python egg support 
-(currently only for windows) which is implemented via the 
-*setupegg.py* build scripts. 
-
-By default PySCeS installs with a version of ZIB's NLEQ2 
+- *pysces_metatool* (available via https://github.com/PySCeS/pysces-metatool) 
+  to add elementary mode analysis support to PySCeS.
+  
+By default PySCeS installs with a version of `ZIB`_'s `NLEQ2`_
 non-linear solver. This software is distributed under its own 
-non-commercial licence. Please see the README.txt document provided 
-with this PySCeS installation for details.  
+non-commercial licence. Please see https://github.com/PySCeS/pysces
+for details.  
 
-Configuring
------------
 
-PySCeS has two configuration (\*.ini) files that allows one to 
-specify global (per installation) and local (per user options). 
+Installation
+------------
+
+Binary install packages for all three OSs and Python versions 3.7-3.9 are 
+provided. Anaconda users can conveniently install PySCeS with: ::
+
+  $ conda install -c conda-forge -c pysces pysces
+  
+Any dependencies will be installed automatically.
+
+Alternatively, you can use *pip* to install PySCeS from PyPI. Again, 
+dependencies will be installed automatically. ::
+
+  $ pip install pysces
+  
+Compilation from source
+-----------------------
+
+As an alternative to a binary installation, you can also build your own PySCeS 
+installation from source. This requires Fortran and C compilers.
+
+Windows build
+~~~~~~~~~~~~~
+
+The fastest way to build your own copy of PySCeS is to use Anaconda Python. 
+
+  - Download and install `Anaconda for Python 3 
+    <https://www.anaconda.com/products/individual#Downloads>`_
+  - Obtain `Git for Windows <https://git-scm.com/download/win>`_
+  - Create a PySCeS environment using conda and activate it:
+
+  .. code-block:: console
+  
+    > conda create -n pyscesdev -c conda-forge python=3.8 numpy scipy \
+            matplotlib sympy packaging pip wheel nose ipython \
+            python-libsbml fortran-compiler assimulo 
+    > conda activate pyscesdev
+
+  - Clone and enter the PySCeS code repository using git
+
+  .. code-block:: console
+
+    (pyscesdev)> git clone https://github.com/PySCeS/pysces.git pysces-src
+    (pyscesdev)> cd pysces-src
+
+  - Now you can build and install PySCeS into the pyscesdev environment
+
+  .. code-block:: console
+  
+    (pyscesdev)> python setup.py build
+    (pyscesdev)> python setup.py install
+
+Linux build
+~~~~~~~~~~~
+
+All modern Linux distributions ship with gcc and gfortran. In addition, the 
+Python development headers (*python-dev* or *python-devel*, depending on your 
+distro) need to be installed.
+
+Clone the source from Github as described above, change into the source 
+directory and run:
+
+.. code-block:: console
+
+  $ python setup.py install
+
+
+macOS build
+~~~~~~~~~~~
+
+The Anaconda build method, described above for Windows, should also work on 
+macOS.
+
+Alternatively, Python 3 may be obtained via `Homebrew <https://brew.sh/>`_ and 
+the compilers may be installed via 
+`Xcode <https://developer.apple.com/xcode/>`_.
+
+Clone the source from Github as described above, change into the source 
+directory and run:
+
+.. code-block:: console
+
+  $ python setup.py install
+
+
+Configuration
+-------------
+
+PySCeS has two configuration (*\*.ini*) files that allow one to 
+specify global (per installation) and local (per user) options. 
 Currently the multiuser options are only fully realised on 
 Linux based systems. Global options are stored in the 
 *pyscfg.ini* file which is created in your PySCeS 
-installation directory (this is a Windows version with the 
-Linux defaults indicated with in \*value\*):: 
+installation directory upon install. The example below is a Windows 
+version; the exact values of ``install_dir`` and ``gnuplot_dir`` (if available) 
+will depend on your individual OS and Python setup and are determined on 
+install. :: 
 
- [Pysces]
- install_dir = c:\python25\lib\site-packages\pysces
- gnuplot_dir = c:\model\gnuplot\binaries
- model_dir = os.path.join(os.getenv('HOMEDRIVE')+os.path.sep,'Pysces','psc')
- output_dir = os.path.join(os.getenv('HOMEDRIVE')+os.path.sep,'Pysces')
- *model_dir = os.path.join(os.path.expanduser('~'),'Pysces','psc')*
- *output_dir = os.path.join(os.path.expanduser('~'),'Pysces')*
-
+  [Pysces]
+  install_dir = c:\Python38\Lib\site-packages\pysces
+  gnuplot_dir = c:\model\gnuplot\binaries
+  model_dir = os.path.join(os.path.expanduser('~'),'Pysces','psc')
+  output_dir = os.path.join(os.path.expanduser('~'),'Pysces')
+  silentstart = False
+  change_dir_on_start = False  
+  
 The *[Pysces]* section contains information on the installation 
 directory, the directory where the GnuPlot executable(s) can be 
-found and the default model file and output directories. As we 
-shall see some of these defaults can be overruled by the local 
-configuration options:: 
+found and the default model file and output directories. 
 
- [ExternalModules]
- nleq2 = True
+This section also contains two further key-value pairs. If *silentstart* 
+(default ``False``) is set to ``True``, informational messages about the PySCeS 
+installation are not printed to the console on startup. The key 
+*change_dir_on_start* specifies if the working directory should be changed to 
+the PySCeS output directory (typically ``$HOME/Pysces`` or 
+``%USERPROFILE%\Pysces``) on startup. When set to ``False`` (the default), the 
+working directory is not changed.
 
- [PyscesModules]
- pitcon = True
+As we shall see some of these defaults can be overridden by the local 
+configuration options.  :: 
 
-These sections define whether 3rd party algorithms (e.g. NLEQ2) 
+  [ExternalModules]
+  nleq2 = True
+
+  [PyscesModules]
+  pitcon = True
+
+These sections define whether third-party algorithms (NLEQ2 and PITCON) 
 are available for use, while the last section allows the alternate
-plotting backends to be enabled or disabled::
+plotting backends to be enabled or disabled: ::
 
- [PyscesConfig]
- gnuplot = True
- matplotlib = True
+  [PyscesConfig]
+  gnuplot = True
+  matplotlib = True
 
-The user configuration files (pys_usercfg.ini) are created when 
+The user configuration file (*pys_usercfg.ini*) is created when 
 PySCeS is imported/run for the *first time*. On Windows this is 
-in ``<HOMEDRIVE>\Pysces`` while on Linux this is in 
-``$HOME\Pysces``. Once created the user configuration files can 
-be edited and will be used for every subsequent PySCeS session::
+in ``%USERPROFILE%\Pysces`` while on Linux and macOS this is in 
+``$HOME/Pysces``. Once created, the user configuration files can 
+be edited and will be used for every subsequent PySCeS session. ::
 
- [Pysces]
- output_dir = C:\mypysces
- model_dir = C:\mypysces\pscmodels
- gnuplot = False
+  [Pysces]
+  output_dir = C:\mypysces
+  model_dir = C:\mypysces\pscmodels
+  gnuplot = False
 
-Here I have customised my default model and output directories 
-and disabled GnuPlot (enabled above). If required *gnuplot_dir* 
-can also be set to point to an alternate location on a per user 
-basis. Once you have PySCeS configured to your personal 
+For example, the above user configuration on a Windows system customises the 
+default model and output directories 
+and disables GnuPlot (enabled globally above). If required, *gnuplot_dir* 
+can also be set to point to an alternate location on a per-user 
+basis. The configuration keys *silentstart* and *change_dir_on_start* can also 
+be overridden here on a per-user basis.
+
+Once you have PySCeS configured to your personal 
 requirements you are ready to begin modelling. 
+
 
 
 .. _References:
@@ -1357,3 +1445,4 @@ References
 .. _NLEQ2:       http://elib.zib.de/pub/elib/codelib/NewtonLib/
 .. _Cygwin:      http://www.cygwin.com
 .. _ipyparallel: https://ipyparallel.readthedocs.io/
+.. _Jupyter:     https://jupyter.org/
