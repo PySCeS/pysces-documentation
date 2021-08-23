@@ -30,7 +30,8 @@ following reference:
      
 We hope that you will enjoy using our software. If, however, you find any
 unexpected features (i.e. bugs) or have any suggestions on how we can improve
-PySCeS please let us know by opening an issue on Github.
+PySCeS please let us know by opening an issue on `Github 
+<https://github.com/PySCeS/pysces/issues>`_.
 
 **The PySCeS development team.**
 

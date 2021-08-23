@@ -3,27 +3,25 @@
 The PySCeS Model Description Language
 =====================================
 
- PySCeS: the Python Simulator for Cellular Systems is an
- extendable toolkit for the analysis and investigation of cellular
- systems. It is available for download from: http://pysces.sf.net
+PySCeS: the **\Py**\ thon **\ S**\ imulator for **\ Ce**\ llular 
+**\ S**\ ystems is an extendable toolkit for the analysis and investigation of 
+cellular systems. It is available for download from: http://pysces.github.io. 
+This section deals with the PySCeS Model Description Language (MDL), a 
+human-readable format for defining kinetic models.
 
 PySCeS uses an ASCII text based *input file* to describe a 
-cellular system in terms of it's stoichiometry, kinetics, 
+cellular system in terms of its stoichiometry, kinetics, 
 compartments and parameters. Input files may have any filename 
 with the single restriction that, for cross platform 
-compatibility, they must end with the extension *.psc*. In this 
-document we describe the PySCeS Model Description Language  
-(MDL) which has been updated and extended for the PySCeS 0.7.x 
-release. 
+compatibility, they must end with the extension *.psc*. Since version 0.7, 
+the PySCeS MDL has been updated and extended to be compatible with models 
+defined in the `SBML`_ standard.
 
- PySCeS is distributed under the PySCeS (BSD style) license and is made
- freely available as Open Source software. See LICENCE.txt for details.
+We hope that you will enjoy using our software. If, however, you find any
+unexpected features (i.e. bugs) or have any suggestions on how we can improve
+PySCeS please let us know by opening an issue on `Github 
+<https://github.com/PySCeS/pysces/issues>`_.
  
-We hope that you will enjoy using our software. If, however, 
-you find any unexpected features (i.e. bugs) or have any 
-suggestions on how we can improve PySCeS and specifically the 
-PySCeS MDL please let us know. 
-
 .. _PySCeS-Inputfile-Detailed:
 
 Defining a PySCeS model
@@ -48,7 +46,7 @@ without reactions or free species, for practical purposes PySCeS
 requires a minimum of a single reaction. Once this information is
 obtained it can be organised and written as a PySCeS input file.
 While this list is the minimum information required for a PySCeS input
-file the MDL allows the definition of advanced models that contain
+file, the MDL allows the definition of advanced models that contain
 compartments, global units, functions, rate and assignment rules.
 
 .. _PySCeS-Inputfile-Detailed-Keywords:
@@ -56,7 +54,7 @@ compartments, global units, functions, rate and assignment rules.
 Model keywords
 ~~~~~~~~~~~~~~
 
-In PySCeS 0.7.x it is now possible to define keywords that
+Since PySCeS 0.7 it is now possible to define keywords that
 specify model information. Keywords have the general form
 
 ``<keyword>: <value>``
@@ -67,32 +65,36 @@ alphanumeric characters (or _), describes the model filename
 interface module) while the *Description* keyword is a (short) 
 single line model description. :: 
 
- Modelname: rohwer_sucrose1
- Description: Sucrose metabolism in sugar cane (Johann M. Rohwer)
+  Modelname: rohwer_sucrose1
+  Description: Sucrose metabolism in sugar cane (Johann M. Rohwer)
  
-Two keywords are available for use (optional) with models that have one or
-more compartments defined. Both take a boolean (True/False) as
+Two keywords (optional) are available for use with models that have one or
+more compartments defined. Both take a boolean (``True``/``False``) as
 their value: 
 
- * *Species_In_Conc* specifies whether the species symbols used in the rate equations represent a concentration (True, default) or an amount (False).
- * *Output_In_Conc* tells PySCeS to output the results of numerical operations in concentrations (True, default) or in amounts (False).
- 
+ * *Species_In_Conc* specifies whether the species symbols used in 
+   the rate equations represent a concentration (``True``, default) 
+   or an amount (``False``).
+ * *Output_In_Conc* tells PySCeS to output the results of numerical 
+   operations on species in concentrations (``True``, default) or 
+   in amounts (``False``). 
+   
 ::
  
   Species_In_Conc: True
   Output_In_Conc: False
  
-More information on the effect these keywords have on the analysis of a model
-can be found in the PySCeS Reference Manual. 
+.. More information on the effect these keywords have on the analysis of a model
+.. can be found in the PySCeS Reference Manual. 
  
 .. _PySCeS-Inputfile-Detailed-Units:
 
 Global unit definition
 ~~~~~~~~~~~~~~~~~~~~~~
 
-PySCeS 0.7 supports the (optional) definition of a set of 
+PySCeS 0.7+ supports the (optional) definition of a set of 
 global units. In doing so we have chosen to follow the general 
-approach used in the Systems Biology Modelling Language (SBML 
+approach used in the Systems Biology Modelling Language (`SBML`_
 L2V3) specification. The general definition of a PySCeS unit 
 is: ```<UnitType>: <kind>, <multiplier>, <scale>, <exponent>``` 
 where *kind* is a string describing the base unit (for SBML 
@@ -100,13 +102,13 @@ compatibility this should be an SI unit) e.g. mole, litre,
 second or metre. The base unit is modified by the multiplier, 
 scale and index using the following relationship: 
 *<multiplier> * (<kind> * 10**<scale>)**<index>*. The 
-default unit definitions are:: 
+default unit definitions are:  :: 
 
- UnitSubstance: mole, 1, 0, 1
- UnitVolume: litre, 1, 0, 1
- UnitTime: second, 1, 0, 1
- UnitLength: metre, 1, 0, 1
- UnitArea: metre, 1, 0, 2
+  UnitSubstance: mole, 1, 0, 1
+  UnitVolume: litre, 1, 0, 1
+  UnitTime: second, 1, 0, 1
+  UnitLength: metre, 1, 0, 1
+  UnitArea: metre, 1, 0, 2
 
 Please note that defining these values does not affect the 
 numerical analysis of the model in any way. 
@@ -120,31 +122,31 @@ Symbol names (i.e. reaction, species, compartment, function,
 rule and parameter names etc.) must start with either an 
 underscore or letter and be followed by any combination of 
 alpha-numeric characters or an underscore. Like all other 
-elements of the input file names are case sensitive:: 
+elements of the input file names are case sensitive:  :: 
 
- R1
- _subA
- par1b
- ext_1
+  R1
+  _subA
+  par1b
+  ext_1
 
 Explicit access to the "current" time in a time simulation is 
 provided by the special symbol ``_TIME_``. This is useful in 
-the definition of events and rules (see chapter on advanced 
-model construction for more details). 
+the definition of events and rules (see section on `Advanced 
+model construction`_ for more details). 
 
 Comments can be placed anywhere in the input file in one of two 
-ways, as single line comment starting with a *#* or as a 
-multi-line triple quoted comment *"""<comment>"""*::
+ways, as single line comment starting with a *#* or as a Python-styled
+multi-line triple quoted *"""<comment>"""*:
 
- # everything after this is ignored
- 
- """
- This is a comment
- spread over a
- few lines.
- """
+.. code-block:: python
 
+  # everything after this is ignored
 
+  """
+  This is a comment
+  spread over a
+  few lines.
+  """
 
 .. _PySCeS-Inputfile-Detailed-Compartments:
 
@@ -154,18 +156,18 @@ Compartment definition
 By default (as is the case in all PySCeS versions < 0.7) PySCeS 
 assumes that the model exists in a single unit volume 
 compartment. In this case it is **not** necessary to define a 
-compartment and the ODE's therefore describe changes in 
+compartment and the ODEs therefore describe changes in 
 concentration per time. However, if a compartment is defined, 
-PySCeS assumes that the ODE's describe changes in substance amount per 
+PySCeS assumes that the ODEs describe changes in substance amount per 
 time. Doing this affects how the model is defined in the input 
 file (especially with respect to the definitions of rate 
 equations and species) and the user is **strongly** advised to 
 read the Users Guide before building models in this way. The 
-compartment definition is as follows ``Compartment: <name>, 
+general compartment definition is ``Compartment: <name>, 
 <size>, <dimensions>``, where *<name>* is the unique 
 compartment id, *<size>* is the size of the compartment (i.e. 
 length, volume or area) defined by the number of *<dimensions>* 
-(e.g. 1,2,3):: 
+(e.g. 1,2,3):  :: 
 
  Compartment: Cell, 2.0, 3
  Compartment: Memb, 1.0, 2 
@@ -175,17 +177,18 @@ length, volume or area) defined by the number of *<dimensions>*
 Function definitions
 ~~~~~~~~~~~~~~~~~~~~
 
-A new addition to the PySCeS MDL is the ability to define SBML 
-styled functions. Simply put these are code substitutions that 
+A relatively recent addition to the PySCeS MDL is the ability to define 
+SBML-styled functions. Simply put these are code substitutions that 
 can be used in rate equation definitions to, for example, 
 simplify the kinetic law. The general syntax for a function is 
 ``Function: <name>, <args> {<formula>}`` where *<name>* is the 
 unique function id, *<arglist>* is one or more comma separated 
 function arguments. The *<formula>* field, enclosed in curly 
-brackets, may only make use of arguments listed in the 
+braces, may only make use of arguments listed in the 
 *<arglist>* and therefore **cannot** reference model attributes 
-directly. If this functionality is required a forcing function 
-(assignment rule) may be what you are looking for. :: 
+directly. If this functionality is required a forcing function/assignment rule
+(see :ref:`PySCeS-Inputfile-Advanced-Assignment`) may be what you are looking 
+for. :: 
 
  Function: rmm_num, Vf, s, p, Keq {
  Vf*(s - p/Keq)
@@ -195,9 +198,8 @@ directly. If this functionality is required a forcing function
  s + Ks*(1.0 + p/Kp)
  }
 
-The syntax for function definitions has been adapted from Frank 
-Bergmann and Herbert Sauro's "Human Readable Model Definition 
-Language" (Draft 1). 
+The syntax for function definitions has been adapted from 
+`Antimony <https://tellurium.readthedocs.io/en/latest/antimony.html>`_. 
 
 .. _PySCeS-Inputfile-Detailed-Fixed:
 
@@ -207,11 +209,11 @@ Defining fixed species
 Boundary species, also known as fixed or external species, are 
 a special class of parameter used when modelling biological 
 systems. The PySCeS MDL fixed species are declared on a single 
-line as ``FIX: <fixedlist>``. The *<fixedlist>* is a space 
-separated list of symbol names which should be initialised like 
-any other species or parameter::
+line as ``FIX: <fixedlist>``. The *<fixedlist>* is a space-separated list of 
+symbol names which should be initialised like 
+any other species or parameter: ::
 
- FIX: Fru_ex Glc_ex ATP ADP UDP phos glycolysis Suc_vac
+  FIX: Fru_ex Glc_ex ATP ADP UDP phos glycolysis Suc_vac
 
 If no fixed species are present in the model then this 
 declaration should be omitted entirely. 
@@ -225,43 +227,46 @@ The reaction stoichiometry and rate equation are defined together
 as a single reaction step. Each step in the system is defined as
 having a name (identifier), a stoichiometry (substrates are
 converted to products) and rate equation (the catalytic activity,
-described in terms of species and parameters). All reaction
+described as a function of species and parameters). All reaction
 definitions should be separated by an empty line. The general format
-of a reaction in a model with no compartments is::
+of a reaction in a model with no compartments is: ::
 
- <name>: 
-         <stoichiometry>
-         <rate equation>
+  <name>: 
+      <stoichiometry>
+      <rate equation>
 
-The *<name>* argument follows the syntax as discussed in a 
-previous section, however, when more than one compartment has 
+The *<name>* argument follows the syntax as discussed in 
+:ref:`PySCeS-Inputfile-Detailed-Names` above;
+however, when more than one compartment has 
 been defined it is important to locate the reaction in its 
-specific compartment. This is done using the ``@`` operator:: 
+specific compartment. This is done using the ``@`` operator: :: 
 
- <name>@<compartment>: 
-                       <stoichiometry>
-                       <rate equation>
+  <name>@<compartment>: 
+      <stoichiometry>
+      <rate equation>
 
-Where *<compartment>* is a valid compartment name. In either 
-case this then followed either directly (or on the next line) 
+where *<compartment>* is a valid compartment name. In either 
+case this then followed (either directly or on the next line) 
 by the reaction stoichiometry.  
 
 Each *<stoichiometry>* argument is defined in terms of reaction 
-substrates, appearing on the left hand side and products on the 
+substrates, appearing on the left hand side, and products on the 
 right hand side of an identifier which labels the reaction as 
 either reversible (*=*) or irreversible (*>*). If required each 
 reagent's stoichiometric coefficient (PySCeS accepts both 
 integer and floating point) should be included in curly braces 
 *{}* immediately preceding the reagent name. If these are 
-omitted a coefficient of one is assumed:: 
+omitted a coefficient of one is assumed.
 
- {2.0}Hex_P = Suc6P + UDP  # reversible reaction
- Fru_ex > Fru              # irreversible reaction
- species_5 > $pool         # a reaction to a sink
+.. code-block:: bash
 
-The PySCeS MDL also allows the use of the *$pool* token that 
+  {2.0}Hex_P = Suc6P + UDP  # reversible reaction
+  Fru_ex > Fru              # irreversible reaction
+  species_5 > $pool         # a reaction to a sink
+
+The PySCeS MDL also allows the use of the ``$pool`` token that 
 represents a placeholder reagent for reactions that have no 
-net substrate or product. Reversibility of a reaction is only 
+net substrate or product. The reversibility of a reaction is only 
 used when exporting the model to other formats (such as SBML) 
 and in the calculation of elementary modes. It does not affect 
 the numerical evaluation of the rate equations in any way. 
@@ -284,66 +289,69 @@ for multiplication with a bracket so *-2(a+b)^h* would be written as
  |  \*\*  | exponentiation          |
  +--------+-------------------------+
  
-Operator precedence increase from top to bottom and left to 
+Operator precedence increases from top to bottom and left to 
 right (adapted from the Python Reference Manual). 
 
 The PySCeS MDL parser has been developed to parse and translate different
-styles of infix into Python/Numpy based expressions, the following
+styles of infix into Python/Numpy-based expressions. The following
 functions are supported in any mathematical expression:
 
- * log, log10, ln, abs
- * pow, exp, root, sqrt
- * sin, cos, tan, sinh, cosh, tanh
- * arccos, arccosh, arcsin, arcsinh, arctan, arctanh
- * floor, ceil, ceiling, piecewise
- * notanumber, pi, infinity, exponentiale
+  * ``log``, ``log10``, ``ln``, ``abs`` (note, *log* is defined as natural 
+    logarithm, equivalent to *ln*)
+  * ``pow``, ``exp``, ``root``, ``sqrt``
+  * ``sin``, ``cos``, ``tan``, ``sinh``, ``cosh``, ``tanh``
+  * ``arccos``, ``arccosh``, ``arcsin``, ``arcsinh``, ``arctan``, ``arctanh``
+  * ``floor``, ``ceil``, ``ceiling``, ``piecewise``
+  * ``notanumber``, ``pi``, ``infinity``, ``exponentiale``
 
-Logical operators are supported in rules, events etc but *not*
+Logical operators are supported in rules, events, etc., but *not*
 in rate equation definitions. The PySCeS parser understands
 Python infix as well as libSBML and NumPy prefix notation.  
 
- * and or xor not
- * > gt(x,y) greater(x,y)
- * < lt(x,y) less(x,y)
- * >= ge(x,y) geq(x,y) greater_equal(x,y) 
- * <= le(x,y) leq(x,y) less_equal(x,y)
- * == eq(x,y) equal(x,y) 
- * != neq(x,y) not_equal(x,y)
+  * ``and`` ``or`` ``xor`` ``not``
+  * ``>`` ``gt(x,y)`` ``greater(x,y)``
+  * ``<`` ``lt(x,y)`` ``less(x,y)``
+  * ``>=`` ``ge(x,y)`` ``geq(x,y)`` ``greater_equal(x,y)``
+  * ``<=`` ``le(x,y)`` ``leq(x,y)`` ``less_equal(x,y)``
+  * ``==`` ``eq(x,y)`` ``equal(x,y)``
+  * ``!=`` ``neq(x,y)`` ``not_equal(x,y)``
 
 Note that currently the MathML *delay and factorial* functions 
 are not supported. Delay is handled by simply removing it from 
 any expression, e.g. *delay(f(x), delay)* would be parsed as 
 *f(x)*. Support for *piecewise* has been recently added 
-to PySCeS and will be discussed in the *advanced features* section. 
+to PySCeS and will be discussed in the *advanced features* section (see 
+:ref:`PySCeS-Inputfile-Advanced-Piecewise`). 
 
-A reaction definition when no compartments are defined::
+A reaction definition when no compartments are defined:
 
- R5: Fru + ATP = Hex_P + ADP
-     Fru/Ki5_Fru)*(Fru/Km5_Fru)*(ATP/Km5_ATP)/(1 +
-     Vmax5/(1 + Fru/Ki5_Fru)*(Fru/Km5_Fru)*(ATP/Km5_ATP)/(1 +
-     Fru/Km5_Fru + ATP/Km5_ATP + Fru*ATP/(Km5_Fru*Km5_ATP) +
-     ADP/Ki5_ADP)
+::
 
-and using the previously defined functions::
+  R5: Fru + ATP = Hex_P + ADP
+      Vmax5/(1 + Fru/Ki5_Fru)*(Fru/Km5_Fru)*(ATP/Km5_ATP) /
+      (1 + Fru/Km5_Fru + ATP/Km5_ATP + Fru*ATP/(Km5_Fru*Km5_ATP) + ADP/Ki5_ADP)
 
- R6:
-    A = B
-    rmm_num(V2,A,B,Keq2)/rmm_den(A,B,K2A,K2B)
+and using the previously defined functions:  ::
 
-When compartments are defined note how now the reaction is now 
-given a location and that because the ODE's formed from these 
-reactions must be in changes in substance per time the rate 
+  R6:
+      A = B
+      rmm_num(V2,A,B,Keq2)/rmm_den(A,B,K2A,K2B)
+
+When compartments are defined, note how now the reaction is now 
+given a location. This is because the ODEs formed from these 
+reactions must be in changes in substance (amount) per time, thus the rate 
 equation is multiplied by its compartment size. In this 
 particular example the species symbols represent concentrations 
-(*Species_In_Conc: True*):: 
+(*Species_In_Conc: True*):  :: 
 
- R1@Cell:
-     s1 = s2
-     Cell*(Vf1*(s1 - s2/Keq1)/(s1 + KS1*(1 + s2/KP1)))
+  R1@Cell:
+      s1 = s2
+      Cell*(Vf1*(s1 - s2/Keq1)/(s1 + KS1*(1 + s2/KP1)))
 
 If *Species_In_Conc: True* the location of the species is 
-defined when it is initialised and will be explained later in 
-this manual. The following example shows the species symbols 
+defined when it is initialised. 
+
+The following example shows the species symbols 
 explicitly defined as amounts (*Species_In_Conc: False*):: 
 
  R4@Memb: s3 = s4
@@ -360,18 +368,18 @@ Species and parameter initialisation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The general form of any species (fixed, free) and parameter is 
-simply:: 
+simply: :: 
 
- property = value
+  property = value
 
 Initialisations can be written in any order anywhere in the 
-input file but for human readability purposes these are usually 
+input file but for enhanced human readability these are usually 
 placed after the reaction that uses them or grouped at the end 
-of the input file. Both decimal and scientific notation is 
+of the input file. Both decimal and scientific notation are 
 allowed with the following provisions that neither floating 
-point *(1. )* nor scientific shorthand *(1.e-3)* syntax should 
-be used, instead use the full form *(1.0e-3)*, *(0.001)* or 
-*(1.0)*. 
+point (``1.``) nor scientific shorthand (``1.e-3``) syntax should 
+be used, instead use the full form (``1.0e-3``, ``0.001`` or 
+``1.0``). 
 
 Variable or free species are initialised differently depending 
 on whether compartments are present in the model. Although the
@@ -383,18 +391,18 @@ as initial guesses for the steady-state algorithms. If an empty
 initial species pool is required it is not recommended to 
 initialise these values to zero (in order to prevent potential 
 divide-by-zero errors) but rather to a small value (e.g. 
-10**-8). 
+``1.0e-8``). 
 
-For a model with no compartments these initial values assumed 
-to be concentrations:: 
+For a model with no compartments these initial values are assumed 
+to be concentrations:  :: 
 
- NADH = 0.001
- ATP  = 2.3e-3
- sucrose = 1
+  NADH = 0.001
+  ATP  = 2.3e-3
+  sucrose = 1
  
 In a model with compartments it is expected that the species 
-are located in a compartment (even if *Species_In_Conc: False*) 
-this is done useing the *@* symbol:: 
+are located in a compartment (even if *Species_In_Conc: False*);
+this is done using the *@* symbol:: 
 
  s1@Memb = 0.01
  s2@Cell = 2.0e-4
@@ -402,19 +410,19 @@ this is done useing the *@* symbol::
 A word of warning, the user is responsible for making sure that 
 the units of the initialised species match those of the model. 
 Please keep in mind that **all** species (and anything that 
-depends on them) is defined in terms of the *Species_In_Conc* 
+depends on them) are defined in terms of the *Species_In_Conc* 
 keyword. For example, if the preceding initialisations were for 
 *R1* (see Reaction section) then they would be concentrations 
 (as *Species_In_Conc: True*). However, in the next example, we 
 are initialising species for *R4* and they are therefore in 
-amounts (*Species_In_Conc: False*):: 
+amounts (*Species_In_Conc: False*).  :: 
 
- s3@Memb = 1.0
- s4@Cell = 2.0
+  s3@Memb = 1.0
+  s4@Cell = 2.0
 
-Fixed species are defined in a similar way and although 
-technically a parameter, they should be given a location in 
-compartmental models:: 
+Fixed species are defined in a similar way and although they
+technically parameters, they should be given a location in 
+compartmental models:  :: 
 
  # InitExt
  X0 = 10.0
@@ -422,19 +430,19 @@ compartmental models::
 
 However, fixed species are true parameters in the sense that 
 their associated compartment size does not affect their value 
-when it changes size. If compartment size dependent behaviour 
-is required an assignment or rate rule should be considered. 
+when it changes size. If compartment size-dependent behaviour 
+is required, an assignment or rate rule should be considered. 
 
 Finally, the parameters should be initialised. PySCeS checks if 
 a parameter is defined that is not present in the rate 
 equations and if such parameter initialisations are detected a 
 harmless warning is generated. If, on the other hand, an 
 uninitialised parameter is detected a warning is generated and 
-a value of 1.0 assigned:: 
+a value of 1.0 assigned:  :: 
 
- # InitPar
- Vf2 = 10.0
- Ks4 = 1.0
+  # InitPar
+  Vf2 = 10.0
+  Ks4 = 1.0
 
 .. _PySCeS-Inputfile-Advanced:
 
@@ -726,3 +734,7 @@ This example illustrates almost all the new features included
 in the PySCeS MDL. Although it may be slightly more complicated 
 than the basic model described above it is still, by our 
 definition, human readable. 
+
+
+
+.. _SBML:       http://sbml.org
