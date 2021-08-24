@@ -418,6 +418,8 @@ where:
 Called without arguments, ``mod.SimPlot()`` plots all the species
 concentrations against time. 
 
+.. _Simulation_Results:
+
 Simulation results
 ~~~~~~~~~~~~~~~~~~
 
@@ -561,6 +563,8 @@ in general, the default values should be sufficient.
   values specified in the input file (0), or a value close to zero (1). The 
   default behaviour is to use the initial values. 
 
+.. _Steady_state_data_object:
+  
 The steady-state data object
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1215,6 +1219,8 @@ operate on multiple operating systems, i.e. Linux, Microsoft Windows and macOS.
 PySCeS makes use of NumPy and SciPy for a number of functions
 and needs a working SciPy stack (https://www.scipy.org) 
 to install and run.
+
+.. _General_Requirements:
 
 General requirements
 --------------------

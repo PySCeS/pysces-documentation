@@ -455,150 +455,163 @@ Assignment rules
 ~~~~~~~~~~~~~~~~
 
 Assignment rules or forcing functions are used to set the value 
-of a model attribute before the ODE's are evaluated. This model 
+of a model attribute before the ODEs are evaluated. This model 
 attribute can either be a parameter used in the rate equations 
-(this is traditionally used to describe an equilibrium block) a 
-compartment or an arbitrary parameter (commonly used to define 
+(this is traditionally used to describe an equilibrium block), a 
+compartment, or an arbitrary parameter (commonly used to define 
 some sort of tracking function). Assignment rules can access 
 other model attributes directly and have the generic form ``!F 
-<par> = <formula>``. Where *<par>* is the parameter assigned 
+<par> = <formula>``, where *<par>* is the parameter assigned 
 the result of *<formula>*. Assignment rules can be defined 
-anywhere in the input file:: 
+anywhere in the input file: :: 
 
- !F S_V_Ratio = Mem_Area/Vcyt
- !F sigma_test = sigma_P*Pmem + sigma_L*Lmem
+  !F S_V_Ratio = Mem_Area/Vcyt
+  !F sigma_test = sigma_P*Pmem + sigma_L*Lmem
  
-These rules would set the value of *<par>* which whose value 
-can be followed with using the simulation and steady state 
-extra_data functionality. 
+These rules would set the value of *<par>*, whose value 
+can be followed using the simulation and steady state 
+*extra_output* functionality (see :ref:`Simulation_Results` and 
+:ref:`Steady_state_data_object`). 
 
 .. _PySCeS-Inputfile-Advanced-Raterule:
 
 Rate rules
 ~~~~~~~~~~
 
-PySCeS now includes support for rate rules which are 
-essentially directly encoded ODE's which are evaluated after 
-the ODE's defined by the model stoichiometry and rate 
+PySCeS includes support for rate rules, which are 
+essentially directly encoded ODEs that are evaluated after 
+the ODEs defined by the model stoichiometry and rate 
 equations. Unlike the SBML rate rule, PySCeS allows one to 
-access a reaction symbol in the rate rules (this is 
+directly access a reaction symbol in the rate rules (this is 
 automatically expanded when the model is exported to SBML). The 
 general form of a rate rule is ``RateRule: <name> 
-{<formula>}``. Where *<name>* is the model attribute (e.g. 
+{<formula>}``, where *<name>* is the model attribute (e.g. 
 compartment or parameter) whose rate of change is described by 
 the *<formula>*. It may also be defined anywhere in the input 
-file:: 
+file:  :: 
 
- RateRule: Mem_Area {
- (sigma_P)*(Mem_Area*k4*(P)) + (sigma_L)*(Mem_Area*k5*(L))
- }
- 
- RateRule: Vcyt {(1.0/Co)*(R1()+(1-m1)*R2()+(1-m2)*R3()-R4()-R5())}
+  RateRule: Mem_Area {
+  (sigma_P)*(Mem_Area*k4*(P)) + (sigma_L)*(Mem_Area*k5*(L))
+  }
 
-Remember to initialise any new parameters used in the rate rules.
+  RateRule: Vcyt {(1.0/Co)*(R1()+(1-m1)*R2()+(1-m2)*R3()-R4()-R5())}
+
+Remember to initialise any new parameters defined in the rate rules.
  
 .. _PySCeS-Inputfile-Advanced-Events:
 
 Events
 ~~~~~~
 
-Time dependant events may now be defined whose definition 
+Time-dependant events may be defined whose definition 
 follows the event framework described in the SBML L2V1 
-specification. The general form of an event is *Event: <name>, 
-<trigger>, <delay> { <assignments> }*. As can be seen an event 
+specification. The general form of an event is ``Event: <name>, 
+<trigger>, <delay> { <assignments> }``. As can be seen, an event 
 consists of essentially three parts, a conditional *<trigger>*, 
 a set of one or more *<assignments>* and a *<delay>* between 
 when the trigger is fired (and the assignments are evaluated) 
 and the eventual assignment to the model. Assignments have the 
-general form *<par> = <formula>*. Events have access to the 
-"current" simulation time using the *_TIME_* symbol:: 
+general form ``<par> = <formula>``. Events have access to the 
+"current" simulation time using the ``_TIME_`` symbol:: 
 
- Event: event1, _TIME_ > 10 and A > 150.0, 0 {
- V1 = V1*vfact
- V2 = V2*vfact
- }
+  Event: event1, _TIME_ > 10 and A > 150.0, 0 {
+  V1 = V1*vfact
+  V2 = V2*vfact
+  }
 
 The following event illustrates the use of a delay of ten time 
 units as well as the prefix notation (used by libSBML) for the 
-trigger (PySCeS understands both notations):: 
+trigger (PySCeS understands both notations):  :: 
 
- Event: event2, geq(_TIME_, 15.0), 10 {
- V3 = V3*vfact2
- } 
+  Event: event2, geq(_TIME_, 15.0), 10 {
+  V3 = V3*vfact2
+  } 
 
-*Note:* in order for PySCeS to handle events it is necessary to
-have the PySundials installed
+.. note::
+
+  In order for PySCeS to handle events it is necessary to
+  have Assimulo installed (refer to :ref:`General_Requirements`).
+
 
 .. _PySCeS-Inputfile-Advanced-Piecewise:
 
 Piecewise
 ~~~~~~~~~
 
-Although technically an operator piecewise functions are 
+Although technically an operator, piecewise functions are 
 sufficiently complicated to warrant their own section. A 
 piecewise operator is essentially an *if, elif, ..., else* 
 logical operator that can be used to conditionally "set" the 
 value of some model attribute. Currently piecewise is supported 
 in rule constructs and has not been tested directly in rate 
 equation definitions. The piecewise function's most basic 
-incarnation is `piecewise(<val1>, <cond>, <val2>)` which is evaluated as:: 
+incarnation is ``piecewise(<val1>, <cond>, <val2>)``, which is 
+evaluated as:  
 
- if <cond>:
-     return <val1>
- else:
-     return <val2>
+.. code-block:: python
 
-alternatively, `piecewise(<val1>, <cond1>, <val2>, <cond2>, <val3>, <cond3>)`::
+  if <cond>:
+      return <val1>
+  else:
+      return <val2>
 
- if <cond1>:
-     return <val1>
- elif <cond2>:
-     return <val1>
- elif <cond3>:
-     return <val3>
+Alternatively, 
+``piecewise(<val1>, <cond1>, <val2>, <cond2>, <val3>, <cond3>)``
 
-or `piecewise(<val1>, <cond1>, <val2>, <cond2>, <val3>, <cond3>, <val4>)`::
+.. code-block:: python
 
- if <cond1>:
-     return <val1>
- elif <cond2>:
-     return <val2>
- elif <cond3>:
-     return <val3>
- else:
-     return <val4>
+  if <cond1>:
+      return <val1>
+  elif <cond2>:
+      return <val1>
+  elif <cond3>:
+      return <val3>
+
+Or ``piecewise(<val1>, <cond1>, <val2>, <cond2>, <val3>, <cond3>, <val4>)``
+c
+.. code-block:: python
+
+  if <cond1>:
+      return <val1>
+  elif <cond2>:
+      return <val2>
+  elif <cond3>:
+      return <val3>
+  else:
+      return <val4>
 
 can also be used. A "real-life" example of an assignment rule 
-with a piecewise function:: 
+with a piecewise function:  :: 
 
- !F Ca2plus=piecewise(0.1, lt(_TIME_,60), 0.1, gt(_TIME_,66.0115), 1)  
+  !F Ca2plus=piecewise(0.1, lt(_TIME_,60), 0.1, gt(_TIME_,66.0115), 1)  
 
-In principle there is no limit on the amount of conditional 
-statements present in a piecewise function, the condition can 
-be a compound statements *a or b and c* and may include the 
-*_TIME_* symbol. 
+In principle there is no limit on the number of conditional 
+statements present in a piecewise function; the condition can 
+be a compound statement (``a or b and c``) and may include the 
+``_TIME_`` symbol. 
 
 Reagent placeholder
 ~~~~~~~~~~~~~~~~~~~
 
-Some models contain reactions which are defined as only have substrates or
-products::
+Some models contain reactions that are defined as only having substrates or
+products, with the fixed (external) species not specified:  ::
 
- R1: A + B >
+  R1: A + B >
+
+  R2: > C + D
  
- R2: > C + D
- 
-The implication is that the relevant reagents appear or disappear
-from or into a constant pool. Unfortunately the `PySCeS` parser does not accept
+The implication is that the relevant reagents appear from or disappear into
+a constant pool. Unfortunately the `PySCeS` parser does not accept
 such an unbalanced reaction definition and requires these pools to be
-represented as a ``$pool`` token::
+represented with a ``$pool`` token::
 
  R1: A + B > $pool
  
  R2: $pool > C + D
 
 ``$pool`` is neither counted as a reagent nor does it ever appear in the
-stoichiometry (think of it as dev/null) and no other $<str> tokens are allowed.
+stoichiometry (think of it as *dev/null*) and no other ``$<str>`` tokens are 
+allowed.
 
 
 .. _PySCeS-Inputfile-Examples:
@@ -611,38 +624,42 @@ Example PySCeS input files
 Basic model definition
 ~~~~~~~~~~~~~~~~~~~~~~
 
-PySCeS test model *pysces_test_linear1.psc*:: 
+PySCeS test model: *pysces_test_linear1.psc* - this file is distributed with 
+PySCeS and copied to your model directory (typically *$HOME/Pysces/psc*) after 
+installation, when running ``pysces.test()`` for the first time.
 
- FIX: x0 x3
+.. code-block:: python
 
- R1: x0 = s0
-     k1*x0 - k2*s0
+  FIX: x0 x3
 
- R2: s0 = s1
-     k3*s0 - k4*s1
+  R1: x0 = s0
+      k1*x0 - k2*s0
 
- R3: s1 = s2
-     k5*s1 - k6*s2
+  R2: s0 = s1
+      k3*s0 - k4*s1
 
- R4: s2 = x3
-     k7*s2 - k8*x3
+  R3: s1 = s2
+      k5*s1 - k6*s2
 
- # InitExt
- x0 = 10.0
- x3 = 1.0
- # InitPar
- k1 = 10.0
- k2 = 1.0
- k3 = 5.0
- k4 = 1.0
- k5 = 3.0
- k6 = 1.0
- k7 = 2.0
- k8 = 1.0
- # InitVar
- s0 = 1.0
- s1 = 1.0
- s2 = 1.0
+  R4: s2 = x3
+      k7*s2 - k8*x3
+
+  # InitExt
+  x0 = 10.0
+  x3 = 1.0
+  # InitPar
+  k1 = 10.0
+  k2 = 1.0
+  k3 = 5.0
+  k4 = 1.0
+  k5 = 3.0
+  k6 = 1.0
+  k7 = 2.0
+  k8 = 1.0
+  # InitVar
+  s0 = 1.0
+  s1 = 1.0
+  s2 = 1.0
 
 .. _PySCeS-Inputfile-Examples-Advanced:
 
@@ -650,87 +667,89 @@ Advanced example
 ~~~~~~~~~~~~~~~~
 
 This model includes the use of *Compartments*, *KeyWords*, 
-*Units* and *Rules*:: 
+*Units* and *Rules*:
 
- Modelname: MWC_wholecell2c
- Description: Surovtsev whole cell model using J-HS Hofmeyr's framework
+.. code-block::
 
- Species_In_Conc: True
- Output_In_Conc: True
+  Modelname: MWC_wholecell2c
+  Description: Surovtsev whole cell model using J-HS Hofmeyr's framework
 
- # Global unit definition
- UnitVolume: litre, 1.0, -3, 1
- UnitSubstance: mole, 1.0, -6, 1
- UnitTime: second, 60, 0, 1
+  Species_In_Conc: True
+  Output_In_Conc: True
 
- # Compartment definition
- Compartment: Vcyt, 1.0, 3
- Compartment: Vout, 1.0, 3
- Compartment: Mem_Area, 5.15898, 2
+  # Global unit definition
+  UnitVolume: litre, 1.0, -3, 1
+  UnitSubstance: mole, 1.0, -6, 1
+  UnitTime: second, 60, 0, 1
 
- FIX: N 
+  # Compartment definition
+  Compartment: Vcyt, 1.0, 3
+  Compartment: Vout, 1.0, 3
+  Compartment: Mem_Area, 5.15898, 2
 
- R1@Mem_Area: N = M
+  FIX: N 
+
+  R1@Mem_Area: N = M
     Mem_Area*k1*(Pmem)*(N/Vout)
 
- R2@Vcyt: {244}M = P # m1
+  R2@Vcyt: {244}M = P # m1
     Vcyt*k2*(M)
 
- R3@Vcyt: {42}M = L # m2
+  R3@Vcyt: {42}M = L # m2
     Vcyt*k3*(M)*(P)**2
 
- R4@Mem_Area: P = Pmem
+  R4@Mem_Area: P = Pmem
     Mem_Area*k4*(P)
 
- R5@Mem_Area: L = Lmem
+  R5@Mem_Area: L = Lmem
     Mem_Area*k5*(L)
 
- # Rate rule definition
- RateRule: Vcyt {(1.0/Co)*(R1()+(1-m1)*R2()+(1-m2)*R3()-R4()-R5())}
- RateRule: Mem_Area {(sigma_P)*R4() + (sigma_L)*R5()}
+  # Rate rule definition
+  RateRule: Vcyt {(1.0/Co)*(R1()+(1-m1)*R2()+(1-m2)*R3()-R4()-R5())}
+  RateRule: Mem_Area {(sigma_P)*R4() + (sigma_L)*R5()}
 
- # Rate rule initialisation
- Co = 3.07e5 # uM p_env/(R*T)
- m1 = 244
- m2 = 42 
- sigma_P = 0.00069714285714285711
- sigma_L = 0.00012
+  # Rate rule initialisation
+  Co = 3.07e5 # uM p_env/(R*T)
+  m1 = 244
+  m2 = 42 
+  sigma_P = 0.00069714285714285711
+  sigma_L = 0.00012
 
- # Assignment rule definition
- !F S_V_Ratio = Mem_Area/Vcyt
- !F Mconc = (M)/M_init
- !F Lconc = (L)/L_init
- !F Pconc = (P)/P_init
- 
- # Assignment rule initialisations
- M_init = 199693.0
- L_init = 102004
- P_init = 5303
- Mconc = 1.0
- Lconc = 1.0
- Pconc = 1.0
+  # Assignment rule definition
+  !F S_V_Ratio = Mem_Area/Vcyt
+  !F Mconc = (M)/M_init
+  !F Lconc = (L)/L_init
+  !F Pconc = (P)/P_init
 
- # Species initialisations
- N@Vout = 3.07e5
- Pmem@Mem_Area = 37.38415
- Lmem@Mem_Area = 8291.2350678770199
- M@Vcyt = 199693.0
- L@Vcyt = 102004
- P@Vcyt = 5303
+  # Assignment rule initialisations
+  M_init = 199693.0
+  L_init = 102004
+  P_init = 5303
+  Mconc = 1.0
+  Lconc = 1.0
+  Pconc = 1.0
+
+  # Species initialisations
+  N@Vout = 3.07e5
+  Pmem@Mem_Area = 37.38415
+  Lmem@Mem_Area = 8291.2350678770199
+  M@Vcyt = 199693.0
+  L@Vcyt = 102004
+  P@Vcyt = 5303
+
+  # Parameter initialisations
+  k1 = 0.00089709
+  k2 = 0.000182027
+  k3 = 1.7539e-010
+  k4 = 5.0072346e-005
+  k5 = 0.000574507164
+
+  """
+  Simulate this model to 200 for maximum happiness and
+  watch the surface to volume ratio and scaled concentrations.
+  """
  
- # Parameter initialisations
- k1 = 0.00089709
- k2 = 0.000182027
- k3 = 1.7539e-010
- k4 = 5.0072346e-005
- k5 = 0.000574507164
- 
- """
- Simulate this model to 200 for maximum happiness and
- watch the surface to volume ratio and scaled concentrations.
- """
- 
-This example illustrates almost all the new features included 
+This example illustrates almost all of the features included 
 in the PySCeS MDL. Although it may be slightly more complicated 
 than the basic model described above it is still, by our 
 definition, human readable. 
