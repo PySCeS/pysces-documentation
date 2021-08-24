@@ -290,7 +290,8 @@ for multiplication with a bracket so *-2(a+b)^h* would be written as
  +--------+-------------------------+
  
 Operator precedence increases from top to bottom and left to 
-right (adapted from the Python Reference Manual). 
+right (adapted from the `Python Reference Manual 
+<https://docs.python.org/3/reference/expressions.html#operator-precedence>`_). 
 
 The PySCeS MDL parser has been developed to parse and translate different
 styles of infix into Python/Numpy-based expressions. The following
