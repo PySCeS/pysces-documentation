@@ -467,6 +467,12 @@ the array as well as a list of column labels is returned:  ::
 This is very useful when using the PySCeS plotting interface 
 (see `Plotting`_) to plot simulation results. 
 
+For quick reference, simulation results are also available as a Numpy record 
+array (``mod.sim``). This allows the user to directly reference a particular 
+model attribute, e.g. ``mod.sim.Time``, ``mod.sim.R1``, or ``mod.sim.s1``. Each 
+of these calls returns a vector of values of the particular model attribute 
+over the entire simulation (length of ``mod.sim_time``).
+
 Advanced
 ~~~~~~~~
 
@@ -799,6 +805,12 @@ has been generated, the next step is to visualise it using the
 
 Called without any arguments, ``Scan1Plot()`` plots all of ``mod.scan_out`` against
 ``mod.scan_in``.
+
+In a similar way that simulation results are captured in the ``mod.sim`` array, 
+1D-scan results are also available as a Numpy record array (``mod.scan``) for 
+quick reference and easy access by the user. All the model attributes defined 
+in ``mod.scan_in`` and ``mod.scan_out`` can be accessed in this way, e.g. 
+``mod.scan.x0``, ``mod.scan.J_R1``, ``mod.scan.s2_ss``, etc.
 
 Two-dimensional parameter scans
 -------------------------------
@@ -1261,7 +1273,7 @@ for details.
 Installation
 ------------
 
-Binary install packages for all three OSs and Python versions 3.7-3.9 are 
+Binary install packages for all three OSs and Python versions 3.6-3.9 are 
 provided. Anaconda users can conveniently install PySCeS with: ::
 
   $ conda install -c conda-forge -c pysces pysces

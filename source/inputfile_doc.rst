@@ -568,7 +568,7 @@ Alternatively,
       return <val3>
 
 Or ``piecewise(<val1>, <cond1>, <val2>, <cond2>, <val3>, <cond3>, <val4>)``
-c
+
 .. code-block:: python
 
   if <cond1>:
