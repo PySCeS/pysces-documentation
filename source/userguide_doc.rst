@@ -76,7 +76,7 @@ To begin modelling we need to start up an interactive Python shell
 
 
   ***********************************************************************
-  * Welcome to PySCeS (0.9.9) - Python Simulator for Cellular Systems   *
+  * Welcome to PySCeS (1.0.0) - Python Simulator for Cellular Systems   *
   *                http://pysces.sourceforge.net                        *
   * Copyright(C) B.G. Olivier, J.M. Rohwer, J.-H.S. Hofmeyr, 2004-2020  *
   * Triple-J Group for Molecular Cell Physiology                        *
