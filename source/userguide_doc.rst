@@ -16,8 +16,8 @@ file read by the program. If you already have PySCeS installed continue straight
 on; if not, :ref:`Installing-PySCeS` contains instructions on building and
 installing PySCeS.
 
-PySCeS is distributed under the PySCeS (BSD style) license and is made
-freely available as Open Source software. See ``LICENSE.txt`` for details.
+PySCeS is distributed under the PySCeS (BSD style) licence and is made
+freely available as Open Source software. See ``LICENCE.txt`` for details.
 
 The continued development of PySCeS depends, to a large 
 degree, on support and feedback from Systems Biology community.

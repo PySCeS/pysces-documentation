@@ -84,9 +84,7 @@ their value:
   Species_In_Conc: True
   Output_In_Conc: False
  
-.. More information on the effect these keywords have on the analysis of a model
-.. can be found in the PySCeS Reference Manual. 
- 
+
 .. _PySCeS-Inputfile-Detailed-Units:
 
 Global unit definition
@@ -181,7 +179,7 @@ A relatively recent addition to the PySCeS MDL is the ability to define
 SBML-styled functions. Simply put these are code substitutions that 
 can be used in rate equation definitions to, for example, 
 simplify the kinetic law. The general syntax for a function is 
-``Function: <name>, <args> {<formula>}`` where *<name>* is the 
+``Function: <name>, <arglist> {<formula>}`` where *<name>* is the 
 unique function id, *<arglist>* is one or more comma separated 
 function arguments. The *<formula>* field, enclosed in curly 
 braces, may only make use of arguments listed in the 
