@@ -903,10 +903,9 @@ Parallel parameter scans
 When performing large multi-dimensional parameter scans, PySCeS has the option 
 to perform the computation in parallel, either on a single machine with a 
 multi-core CPU, or on a multi-node cluster. This requires a working 
-`ipyparallel`_ installation. The functionality is accessed via the 
-``pysces.ParScanner`` class, which has the same methods as the 
-``pysces.Scanner`` class (see above) with a few multiprocessing-specific 
-additions.
+`ipyparallel`_ installation (see also :ref:`Installation`). The functionality is accessed 
+via the ``pysces.ParScanner`` class, which has the same methods as the ``pysces.Scanner`` 
+class (see above) with a few multiprocessing-specific additions.
 
 The parallel scanner class is instantiated with a loaded PySCeS model object: ::
 
@@ -1260,6 +1259,9 @@ the following packages/modules are also installed:
 - *Assimulo* to enable CVODE support. This can be installed on Anaconda via the 
   *conda-forge* channel, or compiled from source 
   (https://jmodelica.org/assimulo).
+  
+- *ipyparallel* for parallel parameter scans (see 
+  https://ipyparallel.readthedocs.io/)
 
 - *pysces_metatool* (available via https://github.com/PySCeS/pysces-metatool) 
   to add elementary mode analysis support to PySCeS.
@@ -1269,6 +1271,7 @@ non-linear solver. This software is distributed under its own
 non-commercial licence. Please see https://github.com/PySCeS/pysces
 for details.  
 
+.. _Installation:
 
 Installation
 ------------
@@ -1278,12 +1281,29 @@ provided. Anaconda users can conveniently install PySCeS with: ::
 
   $ conda install -c conda-forge -c pysces pysces
   
-Any dependencies will be installed automatically.
+Any dependencies will be installed automatically, including the optional dependencies 
+*Assimulo*, *ipyparallel* and *libSBML*.
 
-Alternatively, you can use *pip* to install PySCeS from PyPI. Again, 
+Alternatively, you can use *pip* to install PySCeS from PyPI. Core
 dependencies will be installed automatically. ::
 
   $ pip install pysces
+  
+To install the optional dependences:
+
+- ``pip install "pysces[parscan]"`` - for *ipyparallel*
+- ``pip install "pysces[sbml]"`` - for *libSBML*
+- ``pip install "pysces[cvode]"`` - for *Assimulo*
+- ``pip install "pysces[all]"`` - for all of the above
+
+.. note::
+
+  Installation of *Assimulo* via ``pip`` may well require C and Fortran compilers to be
+  properly set up on your system, as binary packages are only provided for a
+  very limited number of Python versions and operating systems on PyPI. 
+  **This is not guaranteed to work!** If you require Assimulo, the conda
+  install is by far the easier option as up-to-date binaries are supplied
+  for all OS and recent Python versions.
   
 Compilation from source
 -----------------------
