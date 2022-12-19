@@ -494,10 +494,11 @@ means that LSODA chooses the number of steps (up to 500). If this is
 still not enough, PySCeS automatically increases the number of steps
 necessary to find a solution.   
 
-The following options can be set for CVODE, with their defaults indicated:  :: 
+The following are the most common options that can be set for CVODE, 
+with their defaults indicated:  :: 
 
-  'cvode_abstol': 1.0e-15
-  'cvode_mxstep': 1000
+  'cvode_abstol': 1.0e-9
+  'cvode_mxstep': 5000
   'cvode_reltol': 1.0e-9
   'cvode_stats': False
   'cvode_return_event_timepoints': True
@@ -1236,8 +1237,8 @@ to install and run.
 General requirements
 --------------------
 
-- Python 3.6+
-- Numpy 1.14+
+- Python 3.7+
+- Numpy 1.17+
 - SciPy 1.0+
 - Matplotlib (with TkAgg backend)
 - `GnuPlot <http://www.gnuplot.info>`_ (optional, alternative plotting back-end)
@@ -1276,7 +1277,7 @@ for details.
 Installation
 ------------
 
-Binary install packages for all three OSs and Python versions 3.6-3.9 are 
+Binary install packages for all three OSs and Python versions 3.7-3.10 are 
 provided. Anaconda users can conveniently install PySCeS with: ::
 
   $ conda install -c conda-forge -c pysces pysces
@@ -1301,7 +1302,8 @@ To install the optional dependences:
   Installation of *Assimulo* via ``pip`` may well require C and Fortran compilers to be
   properly set up on your system, as binary packages are only provided for a
   very limited number of Python versions and operating systems on PyPI. 
-  **This is not guaranteed to work!** If you require Assimulo, the conda
+  **This is not guaranteed to work!** In addition, the Assimulo version on PyPI is
+  *severely outdated*. If you require Assimulo, the conda
   install is by far the easier option as up-to-date binaries are supplied
   for all OS and recent Python versions.
   
@@ -1323,7 +1325,7 @@ The fastest way to build your own copy of PySCeS is to use Anaconda Python.
 
   .. code-block:: console
   
-    > conda create -n pyscesdev -c conda-forge python=3.8 numpy scipy \
+    > conda create -n pyscesdev -c conda-forge python=3.10 numpy scipy \
             matplotlib sympy packaging pip wheel nose ipython \
             python-libsbml fortran-compiler assimulo 
     > conda activate pyscesdev
@@ -1380,8 +1382,7 @@ Configuration
 
 PySCeS has two configuration (*\*.ini*) files that allow one to 
 specify global (per installation) and local (per user) options. 
-Currently the multiuser options are only fully realised on 
-Linux based systems. Global options are stored in the 
+Global options are stored in the 
 *pyscfg.ini* file which is created in your PySCeS 
 installation directory upon install. The example below is a Windows 
 version; the exact values of ``install_dir`` and ``gnuplot_dir`` (if available) 

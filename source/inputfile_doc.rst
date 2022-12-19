@@ -54,7 +54,7 @@ compartments, global units, functions, rate and assignment rules.
 Model keywords
 ~~~~~~~~~~~~~~
 
-Since PySCeS 0.7 it is now possible to define keywords that
+Since PySCeS 0.7 it is possible to define keywords that
 specify model information. Keywords have the general form
 
 ``<keyword>: <value>``
@@ -155,12 +155,13 @@ By default (as is the case in all PySCeS versions < 0.7) PySCeS
 assumes that the model exists in a single unit volume 
 compartment. In this case it is **not** necessary to define a 
 compartment and the ODEs therefore describe changes in 
-concentration per time. However, if a compartment is defined, 
-PySCeS assumes that the ODEs describe changes in substance amount per 
-time. Doing this affects how the model is defined in the input 
+concentration per time. However, **if a compartment is defined**, 
+PySCeS assumes that the ODEs describe changes in substance **amount per 
+time** in keeping with the SBML standard. Doing this affects 
+how the model is defined in the input 
 file (especially with respect to the definitions of rate 
 equations and species) and the user is **strongly** advised to 
-read the Users Guide before building models in this way. The 
+read the User Guide before building models in this way. The 
 general compartment definition is ``Compartment: <name>, 
 <size>, <dimensions>``, where *<name>* is the unique 
 compartment id, *<size>* is the size of the compartment (i.e. 
@@ -275,7 +276,7 @@ expression and may fall across more than one line. Standard
 Python operators ``+ - * / **`` are supported (note the Python 
 power e.g. *2^4* is written as *2\*\*4*). There is no shorthand 
 for multiplication with a bracket so *-2(a+b)^h* would be written as 
-*-2\*(a+b)\*\*h}* and normal operator precedence applies: 
+*-2\*(a+b)\*\*h* and normal operator precedence applies: 
 
  +--------+-------------------------+
  |  +, -  | addition, subtraction   |
@@ -381,7 +382,7 @@ be used, instead use the full form (``1.0e-3``, ``0.001`` or
 ``1.0``). 
 
 Variable or free species are initialised differently depending 
-on whether compartments are present in the model. Although the
+on whether compartments are present in the model or not. Although the
 variable species concentrations are determined by 
 the parameters of the system, their initial values are used in 
 various places, calculating total moiety concentrations (if 
@@ -420,7 +421,7 @@ amounts (*Species_In_Conc: False*).  ::
   s4@Cell = 2.0
 
 Fixed species are defined in a similar way and although they
-technically parameters, they should be given a location in 
+are technically parameters, they should be given a location in 
 compartmental models:  :: 
 
  # InitExt
@@ -502,35 +503,83 @@ Remember to initialise any new parameters defined in the rate rules.
 Events
 ~~~~~~
 
-Time-dependant events may be defined whose definition 
-follows the event framework described in the SBML L2V1 
-specification. The general form of an event is ``Event: <name>, 
-<trigger>, <delay> { <assignments> }``. As can be seen, an event 
-consists of essentially three parts, a conditional *<trigger>*, 
-a set of one or more *<assignments>* and a *<delay>* between 
-when the trigger is fired (and the assignments are evaluated) 
-and the eventual assignment to the model. Assignments have the 
-general form ``<par> = <formula>``. Events have access to the 
-"current" simulation time using the ``_TIME_`` symbol:: 
+Time-dependent events may be defined. Since PySCeS 1.1.0 their definition 
+follows the event framework described in the SBML L3V2 
+specification. The general form of an event is:
 
-  Event: event1, _TIME_ > 10 and A > 150.0, 0 {
+``Event: <name>, <trigger>, <optional_kwargs> { <assignments> }``
+
+As can be seen, an event consists of essentially two parts, a conditional 
+*<trigger>*, and a set of one or more *<assignments>*. Assignments have the 
+general form ``<par> = <formula>``. Events have access to the "current" 
+simulation time using the ``_TIME_`` symbol:: 
+
+  Event: event1, _TIME_ > 10 and A > 150.0 {
   V1 = V1*vfact
   V2 = V2*vfact
   }
-
-The following event illustrates the use of a delay of ten time 
-units as well as the prefix notation (used by libSBML) for the 
-trigger (PySCeS understands both notations):  :: 
-
-  Event: event2, geq(_TIME_, 15.0), 10 {
-  V3 = V3*vfact2
-  } 
 
 .. note::
 
   In order for PySCeS to handle events it is necessary to
   have Assimulo installed (refer to :ref:`General_Requirements`).
 
+In line with the SBML L3V2 specification, three **optional keyword arguments** 
+can be defined as a comma-separated list following the trigger definition. The 
+general syntax is ``<attribute>=<value>``. The keywords are:
+
+* *delay* (float): specifies a delay between 
+  when the trigger is fired (and the assignments are evaluated) 
+  and the eventual assignment to the model. If this keyword is not specified, a 
+  value of ``0.0`` is assumed.
+* *priority* (integer or None): specifies a priority for events that trigger at 
+  the same simulation time. Events with a higher priority are executed before 
+  those with a lower priority, while events without a priority (``None``) are 
+  executed in random positions in the sequence. If this keyword is not 
+  specified, a value of ``None`` is assumed.
+* *persistent* (boolean): is only relevant to events with a delay, where the 
+  situation may occur that the trigger condition no 
+  longer holds by the time the delay in the simulation has passed. The 
+  *persistent* attribute specifies how to deal with this situation: if 
+  ``True``, the event executes nevertheless; if ``False``, the event does not 
+  execute if the trigger condition is no longer valid. If the keyword is not 
+  specified, a default of ``True`` is assumed.
+
+The reader is referred to the `SBML Specification 
+<https://sbml.org/documents/specifications>`_ for further details.
+
+The following event illustrates the use of a delay of ten time units with a 
+non-persistent trigger and a priority of 3. In addition, the prefix notation 
+(used by libSBML) for the trigger is illustrated (PySCeS understands both 
+notations):  :: 
+
+  Event: event2, geq(_TIME_, 15.0), delay=10.0, persistent=False, priority=3 {
+  V3 = V3*vfact2
+  } 
+  
+.. note::
+
+  #. The **legacy event specification** (PySCeS versions <1.1), which did not 
+     include keywords for `priority` and `persistent`, and in which the 
+     delay was specified as a third positional argument (without 
+     keyword), is still supported but deprecated:
+
+     ``Event: <name>, <trigger>, <delay> { <assignments> }``
+     
+  #. The following SBML event attributes are **not implemented**:
+  
+     * ``event.use_values_from_trigger_time=False`` For an event with a 
+       delay, PySCeS always uses the assignment values from the time 
+       when the event is triggered. When loading an SBML model 
+       (see :ref:`PySCeS-Inputfile-Advanced-SBML`) that uses the 
+       assignment values from the time of event firing and thus has this 
+       event attribute set, a `NotImplementedError` is raised.
+       
+     * ``trigger.initial_value=False`` PySCeS always assumes that the initial 
+       value of a trigger is `True`, i.e. the event cannot fire at time zero, 
+       but that the simulation has to run for at least one iteration before the 
+       trigger can be fired. When loading and SBML model that has the initial 
+       value set to `False`, a `NotImplementedError` is raised. 
 
 .. _PySCeS-Inputfile-Advanced-Piecewise:
 
@@ -562,7 +611,7 @@ Alternatively,
   if <cond1>:
       return <val1>
   elif <cond2>:
-      return <val1>
+      return <val2>
   elif <cond3>:
       return <val3>
 
@@ -611,6 +660,41 @@ represented with a ``$pool`` token::
 ``$pool`` is neither counted as a reagent nor does it ever appear in the
 stoichiometry (think of it as *dev/null*) and no other ``$<str>`` tokens are 
 allowed.
+
+.. _PySCeS-Inputfile-Advanced-SBML:
+
+SBML import and export
+~~~~~~~~~~~~~~~~~~~~~~
+
+SBML models can be imported into PySCeS by first converting them to the input file
+(``*.psc``) format and then loading the input file into PySCeS as usual. 
+The conversion is done with the ``pysces.interface.convertSBML2PSC()`` method: ::
+
+  >>> pysces.interface.convertSBML2PSC(sbmlfile, sbmldir=None, pscfile=None, pscdir=None)
+
+where:
+
+- *sbmlfile*: the SBML filename
+- *sbmldir*: the directory of SBML files (if `None`, the current working directory is 
+  assumed)
+- *pscfile*: the output PSC file name (if `None`, ``<sbmlfile>.psc`` is used)
+- *pscdir*: the PSC output directory (if `None`, the ``pysces.model_dir`` is used)
+
+An instantiated PySCeS model can be exported to SBML using the 
+``pysces.interface.writeMod2SBML()`` method: ::
+
+  >>> pysces.interface.writeMod2SBML(mod, filename=None, directory=None, iValues=True, getdocument=False, getstrbuf=False)
+
+where:
+
+- *mod*: is the PySCeS model object
+- *filename*: writes ``<filename>.xml`` or ``<model_name>.xml`` if `None`
+- *directory*: (optional) an output directory
+- *iValues*: if `True`, the model initial values are used 
+  (or the current values if `False`)
+- *getdocument*: if `True` an SBML document object is returned instead 
+  of writing to disk
+- *getstrbuf*: if `True` a ``StringIO`` buffer is returned instead of writing to disk
 
 
 .. _PySCeS-Inputfile-Examples:
