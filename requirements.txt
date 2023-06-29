@@ -1,6 +1,7 @@
 numpy
 matplotlib
 scipy
+ipyparallel
 sphinx~=4.2.0
 sphinx-rtd-theme~=1.0.0
 readthedocs-sphinx-ext
