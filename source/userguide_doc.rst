@@ -1426,7 +1426,19 @@ working directory is not changed.
 results (``mod.sim``, refer to :ref:`Simulation_Results`) as well as results from a
 parameter scan (``mod.scan``, refer to :ref:`scan1D`) to be returned as a pandas
 DataFrame instead of the default Numpy record array. If pandas is not installed, an
-error message is provided and the configuration option is reset to ``None``.
+error message is provided and the configuration option is reset to ``None``. This
+configuration option can also be set interactively for a whole PySCeS session:
+
+.. code-block:: python
+
+  import pysces
+  pysces.enablePandas()
+
+... or for a single instantiated model:
+
+.. code-block:: python
+
+  mod.enableDataPandas()
 
 As we shall see some of these defaults can be overridden by the local 
 configuration options.  :: 

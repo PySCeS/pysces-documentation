@@ -1,6 +1,12 @@
 PySCeS Module documentation
 ===========================
 
+.. _Module_Pysces:
+
+.. automodule:: pysces
+    :members:
+    :undoc-members:
+
 .. _Module_PyscesUtils:
 
 .. automodule:: pysces.PyscesUtils
