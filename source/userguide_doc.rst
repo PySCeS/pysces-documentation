@@ -471,7 +471,9 @@ For quick reference, simulation results are also available as a Numpy record
 array (``mod.sim``). This allows the user to directly reference a particular 
 model attribute, e.g. ``mod.sim.Time``, ``mod.sim.R1``, or ``mod.sim.s1``. Each 
 of these calls returns a vector of values of the particular model attribute 
-over the entire simulation (length of ``mod.sim_time``).
+over the entire simulation (length of ``mod.sim_time``). If the configuration key
+*custom_datatype* (see :ref:`Configuration`) has been set to *pandas* and pandas is
+installed, ``mod.sim`` is returned as a pandas DataFrame.
 
 Advanced
 ~~~~~~~~
@@ -730,6 +732,8 @@ Response coefficients may thus be accessed with ``mod.rc.get('var', 'T_par')``.
 Parameter scanning
 ==================
 
+.. _scan1D:
+
 Single dimension parameter scans
 --------------------------------
 
@@ -811,7 +815,9 @@ In a similar way that simulation results are captured in the ``mod.sim`` array,
 1D-scan results are also available as a Numpy record array (``mod.scan``) for 
 quick reference and easy access by the user. All the model attributes defined 
 in ``mod.scan_in`` and ``mod.scan_out`` can be accessed in this way, e.g. 
-``mod.scan.x0``, ``mod.scan.J_R1``, ``mod.scan.s2_ss``, etc.
+``mod.scan.x0``, ``mod.scan.J_R1``, ``mod.scan.s2_ss``, etc. If the configuration key
+*custom_datatype* (see :ref:`Configuration`) has been set to *pandas* and pandas is
+installed, ``mod.scan`` is returned as a pandas DataFrame.
 
 Two-dimensional parameter scans
 -------------------------------
@@ -891,6 +897,10 @@ however, the output can be changed and the scan rerun.
   steady-state fluxes and concentrations to the user output so 
   that output has dimensions ``[scan_parameters]+[state_species+state_flux]+[Useroutput]``, 
   otherwise return the default ``[scan_parameters]+[Useroutput]``.
+
+  **New in version 1.1.1:** If the configuration key *custom_datatype*
+  (see :ref:`Configuration`) has been set to *pandas* and pandas is
+  installed, a pandas DataFrame is returned instead of the Numpy array.
 
 * ``sc1.UserOutputList`` the list of output names
 
@@ -1376,6 +1386,7 @@ directory and run:
 
   $ python setup.py install
 
+.. _Configuration:
 
 Configuration
 -------------
@@ -1395,7 +1406,8 @@ install. ::
   model_dir = os.path.join(os.path.expanduser('~'),'Pysces','psc')
   output_dir = os.path.join(os.path.expanduser('~'),'Pysces')
   silentstart = False
-  change_dir_on_start = False  
+  change_dir_on_start = False
+  custom_datatype = None
   
 The *[Pysces]* section contains information on the installation 
 directory, the directory where the GnuPlot executable(s) can be 
@@ -1408,6 +1420,13 @@ installation are not printed to the console on startup. The key
 the PySCeS output directory (typically ``$HOME/Pysces`` or 
 ``%USERPROFILE%\Pysces``) on startup. When set to ``False`` (the default), the 
 working directory is not changed.
+
+**New in version 1.1.1:** a *custom_datatype* key has been introduced (default
+``None``) that can be set to ``pandas``. This will cause model simulation
+results (``mod.sim``, refer to :ref:`Simulation_Results`) as well as results from a
+parameter scan (``mod.scan``, refer to :ref:`scan1D`) to be returned as a pandas
+DataFrame instead of the default Numpy record array. If pandas is not installed, an
+error message is provided and the configuration option is reset to ``None``.
 
 As we shall see some of these defaults can be overridden by the local 
 configuration options.  :: 
@@ -1441,8 +1460,8 @@ For example, the above user configuration on a Windows system customises the
 default model and output directories 
 and disables GnuPlot (enabled globally above). If required, *gnuplot_dir* 
 can also be set to point to an alternate location on a per-user 
-basis. The configuration keys *silentstart* and *change_dir_on_start* can also 
-be overridden here on a per-user basis.
+basis. The configuration keys *silentstart*, *change_dir_on_start*, and
+*custom_datatype* can also be overridden here on a per-user basis.
 
 Once you have PySCeS configured to your personal 
 requirements you are ready to begin modelling. 
