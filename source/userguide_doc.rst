@@ -1247,9 +1247,9 @@ to install and run.
 General requirements
 --------------------
 
-- Python 3.7+
-- Numpy 1.17+
-- SciPy 1.0+
+- Python 3.9+
+- Numpy 1.23+
+- SciPy 1.9+
 - Matplotlib (with TkAgg backend)
 - `GnuPlot <http://www.gnuplot.info>`_ (optional, alternative plotting back-end)
 - `IPython`_ or the `Jupyter`_ notebook (optional, highly recommended for 
@@ -1287,7 +1287,7 @@ for details.
 Installation
 ------------
 
-Binary install packages for all three OSs and Python versions 3.7-3.10 are 
+Binary install packages for all three OSs and Python versions 3.9-3.12 are
 provided. Anaconda users can conveniently install PySCeS with: ::
 
   $ conda install -c conda-forge -c pysces pysces
@@ -1331,13 +1331,20 @@ The fastest way to build your own copy of PySCeS is to use Anaconda Python.
   - Download and install `Anaconda for Python 3 
     <https://www.anaconda.com/products/individual#Downloads>`_
   - Obtain `Git for Windows <https://git-scm.com/download/win>`_
+  - Obtain the *RTools* compiler toolchain (**version 4.0.0.20220206**), either using
+    `Chocolatey <https://chocolatey.org/install>`_
+    (``choco install rtools -y --version=4.0.0.20220206``) or by
+    `direct download
+    <https://github.com/r-windows/rtools-installer/releases/download/2022-02-06/rtools40-x86_64.exe>`_
+    - Install in ``C:\rtools40`` (Chocolatey automatically installs to this path)
+    - Add ``c:\rtools40\ucrt64\bin`` and ``c:\rtools40\usr\bin`` to the system ``PATH``
   - Create a PySCeS environment using conda and activate it:
 
   .. code-block:: console
   
-    > conda create -n pyscesdev -c conda-forge python=3.10 numpy scipy \
-            matplotlib sympy packaging pip wheel nose ipython \
-            python-libsbml fortran-compiler assimulo 
+    > conda create -n pyscesdev -c conda-forge python=3.11 numpy=1.26 scipy \
+            matplotlib sympy packaging pip wheel ipython python-libsbml \
+            assimulo meson meson-python ninja
     > conda activate pyscesdev
 
   - Clone and enter the PySCeS code repository using git
@@ -1347,12 +1354,11 @@ The fastest way to build your own copy of PySCeS is to use Anaconda Python.
     (pyscesdev)> git clone https://github.com/PySCeS/pysces.git pysces-src
     (pyscesdev)> cd pysces-src
 
-  - Now you can build and install PySCeS into the pyscesdev environment
+  - Now you can build and install PySCeS into the *pyscesdev* environment
 
   .. code-block:: console
   
-    (pyscesdev)> python setup.py build
-    (pyscesdev)> python setup.py install
+    (pyscesdev)> pip install --no-deps --no-build-isolation .
 
 Linux build
 ~~~~~~~~~~~
@@ -1366,7 +1372,7 @@ directory and run:
 
 .. code-block:: console
 
-  $ python setup.py install
+  $ pip install .
 
 
 macOS build
@@ -1384,7 +1390,7 @@ directory and run:
 
 .. code-block:: console
 
-  $ python setup.py install
+  $ pip install .
 
 .. _Configuration:
 
@@ -1501,7 +1507,7 @@ References
        Eur. J. Biochem. **42**, 89-95. 
 
 
-.. _PySCeS:      http://pysces.sourceforge.net
+.. _PySCeS:      http://pysces.github.io
 .. _Python:      https://www.python.org
 .. _Numpy:       https://numpy.org
 .. _Scipy:       https://scipy.org
