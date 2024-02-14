@@ -50,7 +50,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'PySCeS'
-copyright = '2004-2023, Brett Oliver, Johann Rohwer, Jannie Hofmeyr'
+copyright = '2004-2024, Brett Oliver, Johann Rohwer, Jannie Hofmeyr'
 author = 'Brett Oliver, Johann Rohwer, Jannie Hofmeyr'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -203,7 +203,7 @@ man_pages = [
 epub_title = 'PySCeS Documentation'
 epub_author = 'Brett G. Olivier, Johann Rohwer, Jannie Hofmeyr'
 epub_publisher = 'Brett G. Olivier, Johann Rohwer'
-epub_copyright = '2004-2023, Brett G. Olivier, Johann Rohwer, Jannie Hofmeyr'
+epub_copyright = '2004-2024, Brett G. Olivier, Johann Rohwer, Jannie Hofmeyr'
 
 # The unique identifier of the text. This can be a ISBN number
 # or the project homepage.
