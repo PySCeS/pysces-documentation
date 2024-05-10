@@ -1288,12 +1288,21 @@ Installation
 ------------
 
 Binary install packages for all three OSs and Python versions 3.9-3.12 are
-provided. Anaconda users can conveniently install PySCeS with: ::
+provided. Anaconda packages are available for 64-bit Windows and Linux, as well as
+macOS *x86_64* and Apple Silicon (*arm64*) architectures. Anaconda users can
+conveniently install PySCeS with: ::
 
   $ conda install -c conda-forge -c pysces pysces
   
 Any dependencies will be installed automatically, including the optional dependencies 
 *Assimulo*, *ipyparallel* and *libSBML*.
+
+.. note::
+
+  Anaconda packages are only provided for Python versions 3.9-3.11. The
+  reason is that Assimulo has not been ported to Python 3.12 and still depends on
+  ``numpy.distutils``. As soon as this has happened, PySCeS Anaconda packages for 3.12
+  will be built.
 
 Alternatively, you can use *pip* to install PySCeS from PyPI. Core
 dependencies will be installed automatically. ::
