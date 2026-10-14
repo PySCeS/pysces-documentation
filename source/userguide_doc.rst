@@ -925,7 +925,7 @@ The parallel scanner class is instantiated with a loaded PySCeS model object: ::
 The additional ``engine`` argument specifies the parallel computation engine to 
 use:
 
-* ``'multiproc'`` - use Python's internal *multiprocessing* module (default)
+* ``'multiproc'`` - use the Python *multiprocess* module (default)
 
 * ``'ipcluster'`` - use *ipcluster* (refer to `ipyparallel`_ documentation)
 
